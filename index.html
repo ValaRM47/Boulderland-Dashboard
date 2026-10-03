@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>گزارش کلی در یک نگاه | بلدرلند</title>
+<link rel="icon" href="logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   Boulderland Dashboard
+   Layout & component language follows hesabdart-dashboard.html
+   (sidebar shell, sticky top bar, flat bordered cards, tinted
+   icon tiles, pill tags). Colors come from the Boulderland logo.
+   ============================================================ */
+:root{
+  --sand:#e7ad72; --forest:#3c4b48; --moss:#3f6356; --cream:#e2c2a1; --ink:#202927; --orange:#e8862f;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:22px; --r-full:999px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+:root,[data-theme="dark"]{
+  --bg:#1b2321; --sidebar:#1f2826; --topbar:#1b2321;
+  --surface:#24302d; --surface-2:#2b3835; --surface-3:#34433f;
+  --border:rgba(231,173,114,.13); --border-strong:rgba(231,173,114,.32);
+  --text:#f3ece3; --text-soft:rgba(243,236,227,.76); --text-dim:rgba(243,236,227,.56);
+  --shadow:0 24px 60px -24px rgba(0,0,0,.65);
+  --accent:var(--sand); --accent-ink:var(--forest);
+  --tile-warm-bg:rgba(231,173,114,.14); --tile-warm:var(--sand);
+  --tile-green-bg:rgba(111,160,140,.16); --tile-green:#8fbfab;
+  --glow:rgba(231,173,114,.10);
+  --c-free:#e8862f; --c-pkg:#e7ad72; --c-student:#f0d6ba;
+  --c-coach:#4f8c75; --c-fcoach:#8fbfab; --c-staff:#c8ddd4; --c-tools:#4f8c75;
+  color-scheme:dark;
+}
+[data-theme="light"]{
+  --bg:#efece6; --sidebar:#faf8f4; --topbar:#efece6;
+  --surface:#fbfaf7; --surface-2:#f3f0ea; --surface-3:#e9e4dc;
+  --border:rgba(60,75,72,.12); --border-strong:rgba(63,99,86,.32);
+  --text:#202927; --text-soft:#44524e; --text-dim:#66736f;
+  --shadow:0 24px 60px -26px rgba(60,75,72,.32);
+  --accent:var(--moss); --accent-ink:#fbfaf7;
+  --tile-warm-bg:rgba(217,119,42,.12); --tile-warm:#c0661f;
+  --tile-green-bg:rgba(63,99,86,.12); --tile-green:var(--moss);
+  --glow:rgba(231,173,114,.22);
+  --c-free:#d9772a; --c-pkg:#e1a061; --c-student:#e9c49c;
+  --c-coach:#3f6356; --c-fcoach:#6f9e8b; --c-staff:#a7c6b9; --c-tools:#3f6356;
+  color-scheme:light;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased;transition:background .4s var(--ease),color .3s}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
+button:disabled{cursor:default}
+a{color:inherit;text-decoration:none}
+svg{display:block}
+[hidden]{display:none!important}
+.ic{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:10px}
+.num{font-variant-numeric:tabular-nums}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:8px}::-webkit-scrollbar-track{background:transparent}
+
+/* ===== APP SHELL ===== */
+.app{display:grid;grid-template-columns:258px minmax(0,1fr);min-height:100dvh}
+
+/* ===== SIDEBAR (right in RTL) ===== */
+.sidebar{position:sticky;top:0;height:100dvh;background:var(--sidebar);border-inline-end:1px solid var(--border);display:flex;flex-direction:column;padding:22px 16px}
+.side-logo{display:flex;align-items:center;gap:11px;padding:4px 8px 22px}
+.side-logo .mark{width:42px;height:42px;border-radius:12px;background:#f3ece3;display:grid;place-items:center;flex:none}
+.side-logo img{width:34px;height:34px;object-fit:contain}
+.side-logo b{font-size:19px;font-weight:800;letter-spacing:-.3px;display:block;line-height:1.2}
+.side-logo span{font-size:11.5px;color:var(--text-dim);font-weight:500}
+.side-sec{font-size:11px;font-weight:700;color:var(--text-dim);padding:16px 12px 8px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:var(--r-md);color:var(--text-soft);font-size:14px;font-weight:500;position:relative;margin-bottom:2px;width:100%;transition:background .18s,color .18s}
+a.nav-item:hover{background:var(--surface-2);color:var(--text)}
+.nav-item svg{width:19px;height:19px;flex:none}
+.nav-item.active{background:linear-gradient(135deg,rgba(231,173,114,.16),rgba(79,140,117,.14));color:var(--text);font-weight:600}
+.nav-item.active::before{content:"";position:absolute;inset-inline-end:-16px;top:50%;transform:translateY(-50%);width:3px;height:22px;background:linear-gradient(var(--sand),var(--c-coach));border-radius:3px}
+.nav-item[aria-disabled="true"]{cursor:default;color:var(--text-dim)}
+.nav-item .soon{margin-inline-start:auto;font-size:10.5px;font-weight:700;color:var(--text-dim);background:var(--surface-2);border:1px solid var(--border);padding:1px 8px;border-radius:var(--r-full)}
+.side-foot{margin-top:auto;padding-top:16px;border-top:1px solid var(--border);font-size:11.5px;color:var(--text-dim);padding-inline:8px;line-height:1.8}
+@media(max-width:980px){.app{grid-template-columns:minmax(0,1fr)}.sidebar{display:none}}
+
+/* ===== MAIN ===== */
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;align-items:center;gap:14px;padding:16px 28px;border-bottom:1px solid var(--border);background:var(--topbar);position:sticky;top:0;z-index:20}
+.top-brand{display:none;align-items:center;gap:10px}
+.top-brand .mark{width:38px;height:38px;border-radius:11px;background:#f3ece3;display:grid;place-items:center}
+.top-brand img{width:30px;height:30px;object-fit:contain}
+.top-brand b{font-size:16px;font-weight:800}
+.navseg{display:none;gap:4px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:3px}
+.navseg a{font-size:12.5px;font-weight:700;color:var(--text-soft);padding:6px 12px;border-radius:10px;white-space:nowrap}
+.navseg a[aria-current="page"]{background:var(--surface);color:var(--text)}
+@media(max-width:980px){.top-brand{display:flex}.navseg{display:flex}}
+.search{flex:1;max-width:340px;display:flex;align-items:center;gap:9px;padding:0 14px;height:42px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--border);transition:border-color .18s}
+.search:focus-within{border-color:var(--border-strong);outline:2px solid var(--accent);outline-offset:1px}
+.search svg{width:17px;height:17px;color:var(--text-dim);flex:none}
+.search input{background:none;border:none;outline:none;color:var(--text);font:inherit;font-size:13.5px;width:100%;height:100%}
+.search input::placeholder{color:var(--text-dim)}
+.top-actions{display:flex;align-items:center;gap:10px;margin-inline-start:auto}
+.clock{height:40px;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--border);font-size:14px;font-weight:700}
+.clock svg{width:16px;height:16px;color:var(--text-dim)}
+.icon-btn{width:40px;height:40px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--border);display:grid;place-items:center;color:var(--text-soft);transition:.18s;flex:none}
+.icon-btn:hover:not(:disabled){color:var(--text);border-color:var(--border-strong)}
+.icon-btn:active:not(:disabled){transform:scale(.96)}
+.icon-btn:disabled{opacity:.4}
+.icon-btn svg{width:18px;height:18px}
+.theme-dark-only{display:block}.theme-light-only{display:none}
+[data-theme="light"] .theme-dark-only{display:none}[data-theme="light"] .theme-light-only{display:block}
+@media(max-width:1100px){.search{display:none}}
+@media(max-width:620px){.topbar{padding:12px 16px;gap:10px}.clock{display:none}.top-brand b{display:none}}
+
+.content{padding:26px 28px 40px}
+@media(max-width:620px){.content{padding:20px 16px 32px}}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:14px}
+.page-head h1{font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.4}
+.page-head .greet{color:var(--text-soft);font-size:14px;margin-top:2px}
+
+/* ===== SHAMSI DATE-RANGE PICKER ===== */
+.datepick{position:relative;display:flex;align-items:center;gap:6px;min-width:0}
+.dp-btn{height:42px;min-width:0;display:flex;align-items:center;gap:9px;padding:0 14px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--border);font-size:13.5px;font-weight:700;white-space:nowrap;transition:border-color .18s}
+.dp-btn:hover,.dp-btn[aria-expanded="true"]{border-color:var(--border-strong)}
+.dp-btn svg{width:17px;height:17px;color:var(--text-dim);flex:none}
+.dp-btn .chev{width:14px;height:14px}
+.dp-label{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.today-tag{flex:none;font-size:11px;font-weight:700;padding:1px 9px;border-radius:var(--r-full);background:var(--tile-green-bg);color:var(--tile-green)}
+.cal{position:absolute;top:calc(100% + 8px);inset-inline-end:0;width:min(580px,calc(100vw - 32px));display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;
+  background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:14px;z-index:40;
+  opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .18s var(--ease),transform .25s var(--ease),visibility 0s linear .25s}
+.cal.open{opacity:1;visibility:visible;transform:none;transition:opacity .18s var(--ease),transform .25s var(--ease),visibility 0s}
+.cal-presets{display:flex;flex-direction:column;gap:3px;border-inline-end:1px solid var(--border);padding-inline-end:12px}
+.cal-presets button{padding:8px 11px;border-radius:10px;font-size:13px;font-weight:700;color:var(--text-soft);line-height:1.45;transition:background .15s,color .15s}
+.cal-presets button small{display:block;font-size:11px;font-weight:500;color:var(--text-dim)}
+.cal-presets button:hover{background:var(--surface-2);color:var(--text)}
+.cal-presets button[aria-pressed="true"]{background:var(--tile-warm-bg);color:var(--text)}
+.cal-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.cal-field{padding:7px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);line-height:1.5}
+.cal-field.on{border-color:var(--accent)}
+.cal-field small{display:block;font-size:11px;color:var(--text-dim);font-weight:600}
+.cal-field b{font-size:13px;font-weight:700}
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.cal-head b{font-size:15px;font-weight:800}
+.cal-head .icon-btn{width:34px;height:34px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:3px}
+.cal-wd{font-size:11px;font-weight:700;color:var(--text-dim);text-align:center;padding:4px 0}
+.cal-day{height:36px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;transition:background .12s}
+.cal-day:hover:not(:disabled){background:var(--surface-2)}
+.cal-day.is-today{box-shadow:inset 0 0 0 1.5px var(--border-strong)}
+.cal-day.fri{color:var(--tile-warm)}
+.cal-day.in,.cal-day.in:hover:not(:disabled){background:color-mix(in srgb,var(--accent) 18%,transparent);border-radius:0;color:var(--text)}
+.cal-day.start,.cal-day.end,.cal-day.start:hover:not(:disabled),.cal-day.end:hover:not(:disabled){background:var(--accent);color:var(--accent-ink)}
+.cal-day:disabled{opacity:.35}
+.cal-foot{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.cal-foot button{flex:1;text-align:center;height:36px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);font-size:13px;font-weight:700;color:var(--text-soft)}
+.cal-foot button:hover{color:var(--text);border-color:var(--border-strong)}
+.cal-foot button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+@media(max-width:620px){
+  .datepick{width:100%}.dp-btn{flex:1;justify-content:center}
+  .cal{inset-inline:0;width:auto;grid-template-columns:1fr}
+  .cal-presets{flex-direction:row;flex-wrap:wrap;border-inline-end:0;padding-inline-end:0;border-bottom:1px solid var(--border);padding-bottom:10px}
+  .cal-presets button{flex:1 1 30%;text-align:center}.cal-presets button small{display:none}
+}
+
+/* ===== KPI ROW (equal heights) ===== */
+.kpis{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:20px;align-items:stretch}
+.kpis.even{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:1320px){.kpis,.kpis.even{grid-template-columns:1fr 1fr}.k-wide{grid-column:1 / -1}}
+@media(max-width:760px){.kpis,.kpis.even{grid-template-columns:1fr}}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:22px;display:flex;flex-direction:column;position:relative;overflow:hidden;min-width:0;transition:border-color .2s}
+.card.glow::before{content:"";position:absolute;top:-40%;inset-inline-end:-12%;width:320px;height:320px;background:radial-gradient(circle,var(--glow),transparent 70%);pointer-events:none}
+.card.clickable{cursor:pointer}
+.card.clickable:hover{border-color:var(--border-strong)}
+.card-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;position:relative}
+.tile{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
+.tile svg{width:20px;height:20px}
+.tile.warm{background:var(--tile-warm-bg);color:var(--tile-warm)}
+.tile.green{background:var(--tile-green-bg);color:var(--tile-green)}
+.card-title{font-size:14.5px;font-weight:700;color:var(--text-soft);white-space:nowrap}
+.pill-btn{margin-inline-start:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--text-soft);background:var(--surface-2);border:1px solid var(--border);padding:5px 12px;border-radius:var(--r-full);transition:.18s;white-space:nowrap}
+.pill-btn:hover,.card.clickable:hover .pill-btn{color:var(--accent-ink);background:var(--accent);border-color:transparent}
+.pill-btn svg{width:13px;height:13px}
+.big{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;margin-bottom:18px;position:relative}
+.big b{font-size:46px;font-weight:800;letter-spacing:-1.5px;line-height:1.1}
+.big b.mid{font-size:36px}
+.big small{font-size:15px;font-weight:600;color:var(--text-soft)}
+.big .of{font-size:13px;font-weight:600;color:var(--text-dim);margin-inline-start:4px}
+.card-body{flex:1;display:flex;flex-direction:column;justify-content:center;position:relative}
+.card-foot{margin-top:18px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:7px}
+.card-foot svg{width:15px;height:15px;flex:none}
+
+/* donut */
+.donut-row{display:grid;grid-template-columns:minmax(130px,170px) minmax(0,1fr);gap:20px;align-items:center}
+.donut-row.stack{grid-template-columns:1fr;gap:16px}
+.donut-row.stack .donut{width:min(180px,100%);margin:0 auto}
+.donut{position:relative;aspect-ratio:1}
+.donut svg{width:100%;height:100%;overflow:visible}
+.donut circle.track{fill:none;stroke:var(--surface-2);stroke-width:14}
+.donut circle.seg{fill:none;stroke-width:14;transition:stroke-width .25s var(--ease),opacity .25s var(--ease)}
+.donut.clicky circle.seg{cursor:pointer}
+.donut.has-focus circle.seg{opacity:.3}
+.donut.has-focus circle.seg.on{opacity:1;stroke-width:17}
+.donut-core{position:absolute;inset:22%;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.donut-core b{font-size:22px;font-weight:800;line-height:1.15}
+.donut-core span{font-size:11px;font-weight:600;color:var(--text-dim);line-height:1.4}
+
+.legend{list-style:none;display:grid;gap:2px;width:100%;max-width:340px}
+.legend .row{display:grid;grid-template-columns:auto minmax(4.6em,1fr) auto auto auto;align-items:center;gap:8px;padding:7px 8px;border-radius:var(--r-sm);font-size:13.5px;width:100%;transition:background .15s}
+button.row:hover,.legend .row.on{background:var(--surface-2)}
+.swatch{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.legend .lbl{color:var(--text-soft);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.legend .val{font-weight:800}
+.legend .pct{font-size:11.5px;color:var(--text-dim);min-width:3em;text-align:end}
+.legend .go{width:14px;height:14px;color:var(--text-dim);opacity:0;transition:opacity .15s}
+button.row:hover .go,button.row:focus-visible .go{opacity:1}
+.legend.money{grid-template-columns:1fr 1fr;gap:6px;max-width:none}
+.legend.money .row{grid-template-columns:auto minmax(0,1fr);row-gap:0;align-items:baseline;padding:8px 10px;background:var(--surface-2);border:1px solid var(--border)}
+.legend.money .lbl{font-weight:700;color:var(--text)}
+.legend.money .val{grid-column:2;font-size:13.5px;white-space:nowrap}
+.legend.money .sub{grid-column:2;font-size:11px;color:var(--text-dim);white-space:nowrap}
+
+/* bars */
+.bars{list-style:none;display:grid;gap:4px}
+.bar{display:grid;grid-template-columns:minmax(0,9.5em) minmax(0,1fr) auto;align-items:center;gap:12px;padding:6px 8px;border-radius:var(--r-sm);font-size:13px;width:100%;transition:background .15s}
+button.bar:hover{background:var(--surface-2)}
+.bar .who{display:flex;flex-direction:column;line-height:1.35;min-width:0}
+.bar .who b{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .who span{font-size:11px;color:var(--text-dim);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .track{height:10px;border-radius:5px;background:var(--surface-2);position:relative;overflow:hidden}
+button.bar:hover .track{background:var(--surface-3)}
+.bar .fill{position:absolute;inset-block:0;inset-inline-start:0;border-radius:5px;transform-origin:right center;background:var(--c-coach)}
+.bar .n{font-weight:800;text-align:end;min-width:1.8em}
+.bars.money .bar{grid-template-columns:minmax(0,8.5em) minmax(0,1fr) auto}
+.bars.money .n{font-size:12.5px}
+.bar.away{opacity:.55;cursor:default}
+.leaves.scroll{max-height:330px;overflow:auto;padding-inline-end:4px}
+.big b.long{font-size:28px;letter-spacing:-.5px}
+.more{display:block;margin:14px auto 0;font-size:12.5px;font-weight:700;color:var(--text-soft);background:var(--surface-2);border:1px solid var(--border);padding:7px 16px;border-radius:var(--r-full)}
+.more:hover{color:var(--text);border-color:var(--border-strong)}
+
+/* leaves */
+.leaves{list-style:none;display:grid;gap:10px}
+.leave{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--border)}
+.leave .av{width:38px;height:38px;border-radius:11px;background:var(--surface-3);display:grid;place-items:center;font-weight:800;color:var(--tile-green)}
+.leave b{font-size:13.5px;font-weight:700;display:block;line-height:1.4}
+.leave span.when{font-size:12px;color:var(--text-soft)}
+.leave .why{font-size:11.5px;color:var(--text-dim);display:block}
+.ltag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--r-full);white-space:nowrap}
+.ltag.daily{color:var(--tile-warm);background:var(--tile-warm-bg)}
+.ltag.hourly{color:var(--tile-green);background:var(--tile-green-bg)}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:26px 12px;color:var(--text-dim);font-size:13px}
+.empty-state .tile{width:48px;height:48px;border-radius:14px}
+.empty-state b{color:var(--text-soft);font-size:14.5px}
+
+/* ===== DIALOG ===== */
+dialog.sheet{margin:auto;border:0;padding:0;background:transparent;color:var(--text);width:min(1060px,calc(100vw - 24px));max-height:min(86dvh,820px);overflow:visible}
+dialog.sheet::backdrop{background:rgba(10,14,13,.55)}
+[data-theme="light"] dialog.sheet::backdrop{background:rgba(32,41,39,.35)}
+.sheet-panel{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r-xl);box-shadow:var(--shadow);display:flex;flex-direction:column;max-height:min(86dvh,820px);overflow:hidden}
+.sheet-head{display:flex;align-items:center;gap:12px;padding:20px 22px 0}
+.sheet-head .tile{width:42px;height:42px}
+.sheet-head h2{font-size:18px;font-weight:800;line-height:1.4}
+.sheet-head .count{font-size:12.5px;color:var(--text-dim);font-weight:600}
+.sheet-head .icon-btn{margin-inline-start:auto}
+.sheet-tools{padding:16px 22px 12px}
+.sheet-tools .search{max-width:none;display:flex}
+.table-wrap{overflow:auto;padding:0 22px 18px;flex:1;min-height:180px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{position:sticky;top:0;z-index:1;background:var(--surface);text-align:start;font-size:11.5px;font-weight:600;color:var(--text-dim);padding:10px 10px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:12px 10px;border-bottom:1px solid var(--border);font-size:13.5px;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr{transition:background .15s}
+.tbl tbody tr:hover{background:var(--surface-2)}
+.tbl .person{display:flex;align-items:center;gap:10px;font-weight:700}
+.tbl .av{width:32px;height:32px;border-radius:9px;background:var(--surface-3);display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--tile-warm);flex:none}
+.tbl .code{color:var(--text-soft);font-weight:600}
+.tbl .time b{font-weight:700;display:block;line-height:1.3}
+.tbl .time small{font-size:11px;color:var(--text-dim)}
+.tag{font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-soft)}
+.tag .swatch{width:7px;height:7px;border-radius:50%}
+.sort{display:inline-flex;align-items:center;gap:4px;font-weight:600;color:inherit;font-size:11.5px}
+.sort svg{width:13px;height:13px;transition:transform .25s var(--ease)}
+.sort[data-dir="asc"] svg{transform:rotate(180deg)}
+.empty{padding:44px 16px;text-align:center;color:var(--text-dim);font-size:13.5px}
+.empty b{display:block;color:var(--text-soft);font-size:15px;margin-bottom:4px}
+
+/* tooltip */
+.tip{position:fixed;z-index:60;pointer-events:none;padding:7px 12px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;background:var(--surface-3);border:1px solid var(--border-strong);box-shadow:var(--shadow);opacity:0;transform:translateY(4px);transition:opacity .15s,transform .2s var(--ease);white-space:nowrap}
+.tip.show{opacity:1;transform:none}
+.tip b{font-weight:800}
+
+/* ===== v5: four-card overview, entries split, payments, item tables ===== */
+.card{container-type:inline-size}
+.kpis.quad{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr}
+@media(max-width:760px){.kpis.quad{grid-template-columns:1fr;grid-auto-rows:auto}}
+.donut-row.auto .donut{width:100%}
+@container (max-width:470px){
+  .donut-row.auto{grid-template-columns:1fr;gap:16px}
+  .donut-row.auto .donut{width:min(180px,100%);margin:0 auto}
+  .donut-row.auto .legend{max-width:none}
+}
+#presentOn{display:flex;flex-direction:column}
+.empty-state span{max-width:34ch;line-height:1.8}
+.split{display:flex;gap:3px;height:12px;border-radius:6px;overflow:hidden;background:var(--surface-2);margin-bottom:12px}
+.split i{display:block;height:100%;border-radius:3px;transition:width .6s var(--ease)}
+.split .in,.swatch.in{background:var(--tile-green)}
+.split .out,.swatch.out{background:var(--c-pkg)}
+.split-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:var(--r-full);background:var(--surface-2);border:1px solid var(--border);font-size:12.5px;font-weight:700;color:var(--text-soft);transition:border-color .15s,color .15s}
+.chip b{color:var(--text);font-weight:800}
+.chip:hover:not(:disabled){border-color:var(--border-strong);color:var(--text)}
+.chip:disabled{opacity:.5}
+.chip .swatch{width:9px;height:9px;border-radius:50%}
+.legend.money button.row{text-align:start;transition:border-color .15s}
+.legend.money button.row:hover{border-color:var(--border-strong);background:var(--surface-2)}
+.legend.money .go{opacity:1;display:inline-block;vertical-align:-2px;margin-inline-start:4px;width:13px;height:13px}
+.pay{font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:var(--r-full);white-space:nowrap}
+.pay.pay-cash{color:var(--tile-warm);background:var(--tile-warm-bg)}
+.pay.pay-card{color:var(--tile-green);background:var(--tile-green-bg)}
+.pay.pay-c2c{color:var(--text-soft);background:var(--surface-2);border:1px solid var(--border)}
+.pay.pay-disc{color:var(--tile-warm);background:transparent;border:1px dashed var(--tile-warm)}
+.dash{color:var(--text-dim)}
+.coach-name{font-weight:600;color:var(--text-soft)}
+.tbl td.money,.tbl th.money{text-align:end}
+.tbl tfoot td{font-weight:800;background:var(--surface-2);border-top:1px solid var(--border-strong);border-bottom:0;padding:13px 10px}
+.tbl tfoot td:first-child{border-start-start-radius:10px;border-end-start-radius:10px}
+.tbl tfoot td:last-child{border-start-end-radius:10px;border-end-end-radius:10px}
+.tbl .item{font-weight:700}
+.tbl .unit{font-size:11px;color:var(--text-dim);font-weight:500;margin-inline-start:3px}
+
+/* ===== v6: members page & member file ===== */
+.members-card{padding:18px 18px 10px}
+.m-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:14px}
+.m-toolbar .search{max-width:380px;display:flex}
+.m-toolbar .chips{display:flex;gap:6px;flex-wrap:wrap}
+.m-toolbar .count{margin-inline-start:auto;font-size:12.5px;color:var(--text-dim);font-weight:600}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.chip[aria-pressed="true"] b{color:inherit}
+.m-wrap{padding:0;overflow:auto}
+.m-tbl .sort:not(.on) svg{opacity:.3}
+.clickable-row{cursor:pointer}
+.clickable-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.sub-line{display:block;font-size:11px;color:var(--text-dim);font-weight:500;margin-top:2px}
+.name-link{font-weight:700;color:inherit;text-decoration:underline;text-decoration-color:var(--border-strong);text-underline-offset:5px}
+.name-link:hover{text-decoration-color:var(--accent)}
+dialog.member-sheet{width:min(1100px,calc(100vw - 24px))}
+.member-panel{overflow:visible;height:min(86dvh,780px)}
+.md-av{font-weight:800;font-size:17px}
+.md-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 22px 12px;border-bottom:1px solid var(--border)}
+.mtabs{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:3px;overflow-x:auto;max-width:100%}
+.mtabs [role="tab"]{font-size:13px;font-weight:700;color:var(--text-soft);padding:7px 14px;border-radius:10px;white-space:nowrap;transition:background .15s,color .15s}
+.mtabs [role="tab"]:hover{color:var(--text)}
+.mtabs [role="tab"][aria-selected="true"]{background:var(--surface);color:var(--text)}
+.md-body{flex:1;overflow:auto;padding:16px 22px 22px;min-height:0}
+.md-body .table-wrap.flat{padding:0;overflow:auto;min-height:0}
+.md-summary{font-size:12.5px;color:var(--text-dim);font-weight:600;margin-bottom:10px}
+.info-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px;max-width:780px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12.5px;font-weight:700;color:var(--text-soft)}
+.field input{height:44px;padding:0 14px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--border);color:var(--text);font:inherit;font-size:14px;font-weight:600}
+.field input[readonly]{background:transparent;border-style:dashed}
+.field input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.field input[aria-invalid="true"]{border-color:var(--tile-warm)}
+.field input[dir="ltr"]{text-align:right}
+.hint{font-size:11.5px;color:var(--text-dim);min-height:1.3em}
+.hint.err{color:var(--tile-warm);font-weight:700}
+.form-actions{grid-column:1 / -1;display:flex;gap:10px;align-items:center;margin-top:4px}
+.btn{height:40px;padding:0 18px;border-radius:var(--r-full);font-size:13px;font-weight:700;background:var(--surface-2);border:1px solid var(--border);color:var(--text-soft);transition:border-color .15s,color .15s}
+.btn:hover{border-color:var(--border-strong);color:var(--text)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.form-msg{font-size:12.5px;color:var(--tile-green);font-weight:700}
+.md-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}
+.md-stat{padding:14px 16px;border-radius:var(--r-lg);background:var(--surface-2);border:1px solid var(--border)}
+.md-stat small{display:block;font-size:11.5px;color:var(--text-dim);font-weight:600}
+.md-stat b{font-size:24px;font-weight:800;line-height:1.5}
+.md-stat b.md-small{font-size:15px}
+.md-stat span{font-size:11.5px;color:var(--text-dim);margin-inline-start:4px}
+.md-pkg{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;padding:14px 16px;border-radius:var(--r-lg);border:1px solid var(--border);margin-bottom:12px}
+.md-pkg small{display:block;font-size:11.5px;color:var(--text-dim);font-weight:600}
+.md-pkg b{font-size:14px;font-weight:800}
+.meter{flex:1 1 160px;height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden;position:relative}
+.meter i{position:absolute;inset-block:0;inset-inline-start:0;background:var(--c-pkg);border-radius:5px}
+.md-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.md-box{padding:14px;border-radius:var(--r-lg);border:1px solid var(--border)}
+.md-box h3{font-size:13.5px;font-weight:800;margin-bottom:8px;color:var(--text-soft)}
+@media(max-width:760px){.info-form,.md-grid{grid-template-columns:1fr}.md-stats{grid-template-columns:1fr 1fr}.md-bar,.md-body{padding-inline:16px}}
+
+/* ===== v7: coach file ===== */
+:root,[data-theme="dark"]{--late:#ef6b64;--late-bg:rgba(239,107,100,.14)}
+[data-theme="light"]{--late:#c43d37;--late-bg:rgba(196,61,55,.10)}
+.k-full{grid-column:1 / -1}
+.ltag.late{color:var(--late);background:var(--late-bg)}
+.tbl tr.late td{background:var(--late-bg)}
+.tbl tr.late:hover td{background:color-mix(in srgb,var(--late) 20%,transparent)}
+.field.wide{grid-column:1 / -1}
+.field-label{font-size:12.5px;font-weight:700;color:var(--text-soft)}
+.sched{display:flex;flex-wrap:wrap;gap:8px}
+.sched span{padding:8px 14px;border-radius:var(--r-md);background:var(--surface-2);border:1px dashed var(--border-strong);font-size:13px;font-weight:700}
+.seg-filter{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.seg-filter label{cursor:pointer;position:relative}
+.seg-filter input{position:absolute;opacity:0;pointer-events:none}
+.seg-filter label:has(input:checked){background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.seg-filter label:has(input:checked) b{color:inherit}
+.seg-filter label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.gauge-wrap{display:grid;grid-template-columns:minmax(240px,320px) minmax(0,1fr);gap:14px;margin-bottom:16px}
+.gauge{padding:16px;border:1px solid var(--border);border-radius:var(--r-lg);text-align:center}
+.g-svg{position:relative;max-width:260px;margin:0 auto}
+.g-svg svg{width:100%;display:block}
+.g-track,.g-fill{fill:none;stroke-width:16;stroke-linecap:round}
+.g-track{stroke:var(--surface-2)}
+.g-center{position:absolute;inset-inline:0;bottom:4px;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.g-center b{font-size:34px;font-weight:900}
+.g-center span{font-size:12px;color:var(--text-dim);font-weight:600}
+.g-scale{display:flex;justify-content:space-between;max-width:260px;margin:4px auto 0;font-size:11.5px;color:var(--text-dim);font-weight:600}
+.g-diff{font-size:14px;font-weight:800;margin-top:10px}
+.g-diff.neg{color:var(--late)}
+.g-diff.pos{color:var(--tile-green)}
+.pen{padding:16px;border:1px solid var(--border);border-radius:var(--r-lg)}
+.pen h3{font-size:13.5px;font-weight:800;color:var(--text-soft);margin-bottom:10px}
+.md-stats.two{grid-template-columns:1fr 1fr;margin-bottom:0}
+.md-stat span{display:block;margin-inline-start:0}
+.md-stat.bad b{color:var(--late)}
+.md-stat.good b{color:var(--tile-green)}
+@media(max-width:760px){.gauge-wrap{grid-template-columns:1fr}}
+
+@media(max-width:480px){
+  .donut-row{grid-template-columns:1fr}
+  .donut-row .donut{width:min(200px,70vw);margin:0 auto}
+  .legend{max-width:none}
+  .legend.money{grid-template-columns:1fr}
+  .table-wrap{padding-inline:10px}
+  .sheet-head,.sheet-tools{padding-inline:16px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" aria-label="منوی اصلی">
+    <div class="side-logo">
+      <span class="mark"><img src="logo.svg" alt="" width="34" height="34" /></span>
+      <div><b>بلدرلند</b><span>پنل مدیریت سالن</span></div>
+    </div>
+
+    <div class="side-sec">گزارش‌ها</div>
+    <a class="nav-item" href="#/" data-route="overview">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1"/><path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"/><path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1"/><path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"/></svg>
+      گزارش کلی در یک نگاه
+    </a>
+    <a class="nav-item" href="#/coaches" data-route="coaches">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4"/><path d="M15 19l2 2l4 -4"/></svg>
+      مربی ها
+    </a>
+    <a class="nav-item" href="#/members" data-route="members">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg>
+      اعضا
+    </a>
+
+    <div class="side-sec">مدیریت</div>
+    <div class="nav-item" aria-disabled="true">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"/><path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2"/></svg>
+      صندوق و مالی <span class="soon">به‌زودی</span>
+    </div>
+
+    <div class="side-foot">داده‌های این نسخه نمونه هستند و پس از اتصال به سیستم پذیرش، زنده می‌شوند.</div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <div class="main">
+    <header class="topbar">
+      <div class="top-brand"><span class="mark"><img src="logo.svg" alt="" width="30" height="30" /></span><b>بلدرلند</b></div>
+      <nav class="navseg" aria-label="صفحه‌ها">
+        <a href="#/" data-route="overview">گزارش کلی</a>
+        <a href="#/coaches" data-route="coaches">مربی ها</a>
+        <a href="#/members" data-route="members">اعضا</a>
+      </nav>
+      <label class="search">
+        <span class="sr-only">جستجوی اعضا</span>
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/></svg>
+        <input id="topSearch" type="search" placeholder="جستجوی اعضا با نام یا کد" autocomplete="off" />
+      </label>
+      <div class="top-actions">
+        <span class="clock num"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/></svg><span id="clock"></span></span>
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="تغییر حالت روشن و تیره">
+          <svg class="ic theme-dark-only" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/></svg>
+          <svg class="ic theme-light-only" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <h1 id="pageTitle">گزارش کلی در یک نگاه</h1>
+          <p class="greet" id="pageGreet"></p>
+        </div>
+
+        <div class="datepick" id="datepick"></div>
+      </div>
+
+      <!-- ===== PAGE: OVERVIEW ===== -->
+      <section class="kpis quad" id="page-overview" aria-label="شاخص‌های کلی">
+
+        <article class="card glow" id="presentCard">
+          <div class="card-top">
+            <span class="tile warm" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg></span>
+            <h2 class="card-title">تعداد اعضا حاضر</h2>
+            <button class="pill-btn" type="button" id="membersAll">مشاهده همه<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17l-10 -10"/><path d="M16 7l-9 0l0 9"/></svg></button>
+          </div>
+          <div id="presentOn" class="card-body">
+            <div class="big"><b class="num" id="membersTotal">۰</b><small>نفر در سالن</small></div>
+            <div class="card-body">
+              <div class="donut-row auto">
+                <div class="donut clicky" id="membersDonut"></div>
+                <ul class="legend" id="membersLegend"></ul>
+              </div>
+            </div>
+          </div>
+          <div id="presentOff" class="card-body" hidden>
+            <div class="empty-state">
+              <span class="tile warm" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/></svg></span>
+              <b>حضور لحظه‌ای فقط برای امروز است</b>
+              <span>برای تاریخ انتخاب‌شده، همه ورودی‌ها را در کارت «تعداد کل ورودی ها» ببینید.</span>
+              <button class="pill-btn" type="button" id="goToday" style="margin:6px 0 0">نمایش امروز</button>
+            </div>
+          </div>
+          <div class="card-foot"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 8h.01"/><path d="M11 12h1v4h1"/></svg>برای دیدن لیست هر دسته، روی آن کلیک کنید</div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="tile green" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M15 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"/><path d="M21 12h-13l3 -3"/><path d="M11 15l-3 -3"/></svg></span>
+            <h2 class="card-title">تعداد کل ورودی ها</h2>
+            <button class="pill-btn" type="button" id="entriesAll">مشاهده همه<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17l-10 -10"/><path d="M16 7l-9 0l0 9"/></svg></button>
+          </div>
+          <div class="big"><b class="num" id="entriesTotal">۰</b><small id="entriesUnit">ورودی</small></div>
+          <div class="card-body">
+            <div class="split" id="entriesSplit" aria-hidden="true"><i class="in"></i><i class="out"></i></div>
+            <div class="split-legend">
+              <button class="chip" type="button" id="chipIn"><i class="swatch in"></i>حاضر <b class="num"></b></button>
+              <button class="chip" type="button" id="chipOut"><i class="swatch out"></i>خارج شده <b class="num"></b></button>
+            </div>
+            <ul class="bars" id="entryBars" aria-label="ورودی‌ها به تفکیک عضویت"></ul>
+          </div>
+          <div class="card-foot"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 8h.01"/><path d="M11 12h1v4h1"/></svg><span id="entriesFoot"></span></div>
+        </article>
+
+        <article class="card clickable" id="coachCard">
+          <div class="card-top">
+            <span class="tile green" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4"/><path d="M15 19l2 2l4 -4"/></svg></span>
+            <h2 class="card-title">تعداد مربیان حاضر</h2>
+            <button class="pill-btn" type="button" id="coachesAll">لیست<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17l-10 -10"/><path d="M16 7l-9 0l0 9"/></svg></button>
+          </div>
+          <div class="big"><b class="num" id="coachTotal">۰</b><small>مربی</small><span class="of num" id="coachOf"></span></div>
+          <div class="card-body">
+            <ul class="bars" id="coachBars" aria-label="تعداد شاگردان هر مربی"></ul>
+          </div>
+          <div class="card-foot"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 8h.01"/><path d="M11 12h1v4h1"/></svg><span id="coachFoot"></span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="tile warm" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"/><path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2"/></svg></span>
+            <h2 class="card-title" id="revenueTitle">جمع دخل روز</h2>
+          </div>
+          <div class="big"><b class="num mid" id="revenueTotal">۰</b><small>تومان</small></div>
+          <div class="card-body">
+            <div class="donut-row auto">
+              <div class="donut clicky" id="revenueDonut"></div>
+              <ul class="legend money" id="revenueLegend"></ul>
+            </div>
+          </div>
+          <div class="card-foot"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 8h.01"/><path d="M11 12h1v4h1"/></svg><span id="revenueAsOf"></span></div>
+        </article>
+      </section>
+
+      <!-- ===== PAGE: COACHES ===== -->
+      <section class="kpis even" id="page-coaches" aria-label="مربی ها" hidden>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="tile green" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg></span>
+            <h2 class="card-title">شاگرد های مربی ها</h2>
+            <button class="pill-btn" type="button" id="studentsAll">همه<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17l-10 -10"/><path d="M16 7l-9 0l0 9"/></svg></button>
+          </div>
+          <div class="big"><b class="num" id="stTotal">۰</b><small>شاگرد</small></div>
+          <div class="card-body"><ul class="bars" id="stBars" aria-label="شاگردان هر مربی"></ul></div>
+          <div class="card-foot"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 8h.01"/><path d="M11 12h1v4h1"/></svg><span>روی نام هر مربی بزنید تا لیست شاگردانش باز شود</span></div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="tile warm" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"/><path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2"/></svg></span>
+            <h2 class="card-title">درآمد مربی ها</h2>
+          </div>
+          <div class="big"><b class="num mid" id="incTotal">۰</b><small>تومان</small></div>
+          <div class="card-body"><ul class="bars money" id="incBars" aria-label="درآمد هر مربی"></ul></div>
+          <div class="card-foot"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 8h.01"/><path d="M11 12h1v4h1"/></svg><span id="incFoot"></span></div>
+        </article>
+
+        <article class="card k-wide">
+          <div class="card-top">
+            <span class="tile green" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M10 16l4 -4"/></svg></span>
+            <h2 class="card-title">مرخصی ها</h2>
+          </div>
+          <div class="big"><b class="num" id="lvTotal">۰</b><small>مرخصی</small><span class="of num" id="lvOf"></span></div>
+          <div class="card-body" id="lvBody"></div>
+          <div class="card-foot"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 8h.01"/><path d="M11 12h1v4h1"/></svg><span id="lvFoot"></span></div>
+        </article>
+
+        <article class="card k-full members-card">
+          <div class="card-top">
+            <span class="tile green" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4"/><path d="M15 19l2 2l4 -4"/></svg></span>
+            <h2 class="card-title">فهرست مربی ها</h2>
+            <span class="pill-btn" style="pointer-events:none">برای دیدن پرونده، روی ردیف مربی بزنید</span>
+          </div>
+          <div class="table-wrap m-wrap">
+            <table class="tbl m-tbl"><thead><tr id="cHead"></tr></thead><tbody id="cRows"></tbody></table>
+          </div>
+        </article>
+      </section>
+
+      <!-- ===== PAGE: MEMBERS ===== -->
+      <section id="page-members" aria-label="اعضا" hidden>
+        <article class="card members-card">
+          <div class="m-toolbar">
+            <label class="search">
+              <span class="sr-only">جستجوی اعضا</span>
+              <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/></svg>
+              <input id="mSearch" type="search" placeholder="جستجوی نام، کد، شماره تماس یا کد ملی" autocomplete="off" />
+            </label>
+            <div class="chips" id="mChips" role="group" aria-label="فیلتر اعضا"></div>
+            <span class="count num" id="mCount"></span>
+          </div>
+          <div class="table-wrap m-wrap">
+            <table class="tbl m-tbl"><thead><tr id="mHead"></tr></thead><tbody id="mRows"></tbody></table>
+            <div class="empty" id="mEmpty" hidden><b>عضوی پیدا نشد</b>عبارت جستجو یا فیلتر را تغییر دهید.</div>
+            <button class="more" id="mMore" type="button" hidden></button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- ===== LIST DIALOG ===== -->
+<dialog class="sheet" id="listDialog" aria-labelledby="dlgTitle">
+  <div class="sheet-panel">
+    <div class="sheet-head">
+      <span class="tile warm" id="dlgTile" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></svg></span>
+      <div>
+        <h2 id="dlgTitle"></h2>
+        <div class="count num" id="dlgCount"></div>
+      </div>
+      <button class="icon-btn" type="button" id="dlgClose" aria-label="بستن">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sheet-tools">
+      <label class="search">
+        <span class="sr-only">جستجو بر اساس نام یا کد</span>
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/></svg>
+        <input id="dlgSearch" type="search" placeholder="جستجوی نام یا کد" autocomplete="off" />
+      </label>
+    </div>
+    <div class="table-wrap">
+      <table class="tbl">
+        <thead><tr id="dlgHead"></tr></thead>
+        <tbody id="rows"></tbody>
+        <tfoot id="dlgFoot"></tfoot>
+      </table>
+      <div class="empty" id="empty" hidden><b>کسی پیدا نشد</b>عبارت جستجو را تغییر دهید.</div>
+      <button class="more" type="button" id="dlgMore" hidden></button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== MEMBER FILE ===== -->
+<dialog class="sheet member-sheet" id="memberDialog" aria-labelledby="mdName">
+  <div class="sheet-panel member-panel">
+    <div class="sheet-head">
+      <span class="tile warm md-av" id="mdAv" aria-hidden="true"></span>
+      <div><h2 id="mdName"></h2><div class="count" id="mdSub"></div></div>
+      <button class="icon-btn" type="button" id="mdClose" aria-label="بستن">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="md-bar">
+      <div class="mtabs" id="mdTabs" role="tablist" aria-label="پرونده عضو">
+        <button type="button" role="tab" data-tab="info" id="tab-info" aria-controls="mp-info">اطلاعات فردی</button>
+        <button type="button" role="tab" data-tab="pay" id="tab-pay" aria-controls="mp-pay">اطلاعات پرداخت</button>
+        <button type="button" role="tab" data-tab="visits" id="tab-visits" aria-controls="mp-visits">اطلاعات تردد</button>
+        <button type="button" role="tab" data-tab="report" id="tab-report" aria-controls="mp-report">گزارش کلی</button>
+      </div>
+      <div class="datepick" id="mdPick"></div>
+    </div>
+    <div class="md-body">
+      <section role="tabpanel" id="mp-info" aria-labelledby="tab-info"></section>
+      <section role="tabpanel" id="mp-pay" aria-labelledby="tab-pay" hidden></section>
+      <section role="tabpanel" id="mp-visits" aria-labelledby="tab-visits" hidden></section>
+      <section role="tabpanel" id="mp-report" aria-labelledby="tab-report" hidden></section>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== COACH FILE ===== -->
+<dialog class="sheet member-sheet" id="coachDialog" aria-labelledby="cdName">
+  <div class="sheet-panel member-panel">
+    <div class="sheet-head">
+      <span class="tile green md-av" id="cdAv" aria-hidden="true"></span>
+      <div><h2 id="cdName"></h2><div class="count" id="cdSub"></div></div>
+      <button class="icon-btn" type="button" id="cdClose" aria-label="بستن">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="md-bar">
+      <div class="mtabs" id="cdTabs" role="tablist" aria-label="پرونده مربی">
+        <button type="button" role="tab" data-tab="info" id="ctab-info" aria-controls="cp-info">اطلاعات فردی</button>
+        <button type="button" role="tab" data-tab="students" id="ctab-students" aria-controls="cp-students">اطلاعات شاگرد ها</button>
+        <button type="button" role="tab" data-tab="visits" id="ctab-visits" aria-controls="cp-visits">اطلاعات تردد</button>
+        <button type="button" role="tab" data-tab="report" id="ctab-report" aria-controls="cp-report">گزارش کلی</button>
+      </div>
+      <div class="datepick" id="cdPick"></div>
+    </div>
+    <div class="md-body">
+      <section role="tabpanel" id="cp-info" aria-labelledby="ctab-info"></section>
+      <section role="tabpanel" id="cp-students" aria-labelledby="ctab-students" hidden></section>
+      <section role="tabpanel" id="cp-visits" aria-labelledby="ctab-visits" hidden></section>
+      <section role="tabpanel" id="cp-report" aria-labelledby="ctab-report" hidden></section>
+    </div>
+  </div>
+</dialog>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
+<script>
+(() => {
+  'use strict';
+
+  /* ---------- helpers ---------- */
+  const $ = (s, r = document) => r.querySelector(s);
+  const M = window.Motion || null;
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canAnimate = !!M && !reduceMotion;
+  const EASE = [0.22, 1, 0.36, 1];
+  const fa = n => Number(n).toLocaleString('fa-IR');
+  const faPlain = n => fa(n).replace(/٬/g, '');
+  const faDigits = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); // keeps leading zeros
+  const faDec = (n, d = 1) => (Math.round(n * 10 ** d) / 10 ** d).toLocaleString('fa-IR');
+  const faPct = n => faDec(n) + '٪';
+  const faTime = d => d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', hour12: false });
+  const faHour = h => faDigits(String(h).padStart(2, '0')) + ':۰۰';
+  const compact = v => v >= 1e9 ? `${faDec(v / 1e9, 2)} میلیارد` : v >= 1e6 ? `${faDec(v / 1e6)} میلیون` : fa(v);
+  const money = v => v >= 1e8 ? compact(v) : fa(v);
+  const countUp = (el, to, dur = 1.1) => {
+    el.classList.toggle('long', String(Math.round(to)).length > 10);
+    if (!canAnimate) { el.textContent = fa(to); return; }
+    M.animate(0, to, { duration: dur, ease: EASE, onUpdate: v => { el.textContent = fa(Math.round(v)); } });
+  };
+
+  /* ---------- Jalali (Shamsi) calendar, port of jalaali-js ---------- */
+  const Jal = (() => {
+    const div = (a, b) => ~~(a / b), mod = (a, b) => a - ~~(a / b) * b;
+    const BR = [-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210, 1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178];
+    function cal(jy) {
+      const gy = jy + 621; let leapJ = -14, jp = BR[0], jump = 0, jm, n;
+      for (let i = 1; i < BR.length; i++) { jm = BR[i]; jump = jm - jp; if (jy < jm) break; leapJ += div(jump, 33) * 8 + div(mod(jump, 33), 4); jp = jm; }
+      n = jy - jp; leapJ += div(n, 33) * 8 + div(mod(n, 33) + 3, 4);
+      if (mod(jump, 33) === 4 && jump - n === 4) leapJ += 1;
+      const leapG = div(gy, 4) - div((div(gy, 100) + 1) * 3, 4) - 150, march = 20 + leapJ - leapG;
+      if (jump - n < 6) n = n - jump + div(jump + 4, 33) * 33;
+      let leap = mod(mod(n + 1, 33) - 1, 4); if (leap === -1) leap = 4;
+      return { leap, gy, march };
+    }
+    const g2d = (gy, gm, gd) => { const d = div((gy + div(gm - 8, 6) + 100100) * 1461, 4) + div(153 * mod(gm + 9, 12) + 2, 5) + gd - 34840408; return d - div(div(gy + 100100 + div(gm - 8, 6), 100) * 3, 4) + 752; };
+    const d2g = jdn => { let j = 4 * jdn + 139361631; j = j + div(div(4 * jdn + 183187720, 146097) * 3, 4) * 4 - 3908; const i = div(mod(j, 1461), 4) * 5 + 308; const gd = div(mod(i, 153), 5) + 1, gm = mod(div(i, 153), 12) + 1; return { gy: div(j, 1461) - 100100 + div(8 - gm, 6), gm, gd }; };
+    const j2d = (jy, jm, jd) => { const r = cal(jy); return g2d(r.gy, 3, r.march) + (jm - 1) * 31 - div(jm, 7) * (jm - 7) + jd - 1; };
+    const d2j = jdn => { const gy = d2g(jdn).gy; let jy = gy - 621; const r = cal(jy); let k = jdn - g2d(gy, 3, r.march);
+      if (k >= 0) { if (k <= 185) return { jy, jm: 1 + div(k, 31), jd: mod(k, 31) + 1 }; k -= 186; } else { jy -= 1; k += 179; if (r.leap === 1) k += 1; }
+      return { jy, jm: 7 + div(k, 30), jd: mod(k, 30) + 1 }; };
+    return {
+      fromDate: d => d2j(g2d(d.getFullYear(), d.getMonth() + 1, d.getDate())),
+      toDate: (jy, jm, jd) => { const g = d2g(j2d(jy, jm, jd)); return new Date(g.gy, g.gm - 1, g.gd); },
+      monthLength: (jy, jm) => jm <= 6 ? 31 : jm <= 11 ? 30 : (cal(jy).leap === 0 ? 30 : 29),
+    };
+  })();
+  const MONTHS = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  const SEASONS = ['بهار','تابستان','پاییز','زمستان'];
+  const WEEKDAYS = ['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+  const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const sameDay = (a, b) => a.getTime() === b.getTime();
+  const dayDiff = (a, b) => Math.round((startOfDay(b) - startOfDay(a)) / 864e5);
+  const minD = (a, b) => (a < b ? a : b);
+  const dayMonth = d => { const j = Jal.fromDate(d); return `${fa(j.jd)} ${MONTHS[j.jm - 1]}`; };
+  const fullDate = d => { const j = Jal.fromDate(d); return `${fa(j.jd)} ${MONTHS[j.jm - 1]} ${faPlain(j.jy)}`; };
+  const longDate = d => `${WEEKDAYS[d.getDay()]} ${fullDate(d)}`;
+  const shortWeekday = d => `${WEEKDAYS[d.getDay()]} ${dayMonth(d)}`;
+  function rangeText(s, e, withWeekday) {
+    if (sameDay(s, e)) return withWeekday ? longDate(s) : fullDate(s);
+    const a = Jal.fromDate(s), b = Jal.fromDate(e);
+    return a.jy === b.jy ? `${dayMonth(s)} تا ${fullDate(e)}` : `${fullDate(s)} تا ${fullDate(e)}`;
+  }
+
+  /* ---------- theme & clock ---------- */
+  const root = document.documentElement;
+  const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+                  set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+  root.dataset.theme = store.get('bl-theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  $('#themeBtn').addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light';
+    store.set('bl-theme', root.dataset.theme);
+  });
+  const tick = () => { $('#clock').textContent = faTime(new Date()); };
+  tick(); setInterval(tick, 15000);
+
+  /* ---------- categories ---------- */
+  const CATS = [
+    { id: 'free',    label: 'ورودی آزاد', color: 'var(--c-free)' },
+    { id: 'pkg',     label: 'پکیج',       color: 'var(--c-pkg)' },
+    { id: 'student', label: 'شاگرد آزاد', color: 'var(--c-student)' },
+    { id: 'coach',   label: 'مربی',       color: 'var(--c-coach)' },
+    { id: 'fcoach',  label: 'مربی آزاد',  color: 'var(--c-fcoach)' },
+    { id: 'staff',   label: 'پرسنل',      color: 'var(--c-staff)' },
+  ];
+  const CAT = Object.fromEntries(CATS.map(c => [c.id, c]));
+  /* ---------- price lists (sample prices until real pricing is connected) ---------- */
+  const FREE_PRICE = 350000, STUDENT_PRICE = 250000;
+  const PACKAGES = [
+    { id: 'p1',  label: 'تک جلسه', n: 1,  price: 450000,  w: 0.2 },
+    { id: 'p4',  label: '۴ جلسه',  n: 4,  price: 1600000, w: 0.3 },
+    { id: 'p8',  label: '۸ جلسه',  n: 8,  price: 2900000, w: 0.3 },
+    { id: 'p10', label: '۱۰ جلسه', n: 10, price: 3500000, w: 0.2 },
+  ];
+  const TOOLS = [
+    { id: 'rope',      label: 'طناب',        price: 150000, w: 0.15 },
+    { id: 'carabiner', label: 'کارابیت',     price: 50000,  w: 0.2 },
+    { id: 'belay',     label: 'ابزار حمایت', price: 80000,  w: 0.2 },
+    { id: 'shoes',     label: 'کفش سنگ',     price: 120000, w: 0.45 },
+  ];
+  const PAY = { cash: 'نقد', card: 'کارت', c2c: 'کارت به کارت', disc: 'تخفیف مربی' };
+  const REV_DEFS = [
+    { id: 'free',    label: 'ورودی آزاد', color: 'var(--c-free)',    note: n => `${fa(n)} ورودی` },
+    { id: 'pkg',     label: 'پکیج',       color: 'var(--c-pkg)',     note: n => `${fa(n)} پکیج`, pick: true },
+    { id: 'student', label: 'شاگرد آزاد', color: 'var(--c-student)', note: n => `${fa(n)} جلسه` },
+    { id: 'tools',   label: 'ابزار',      color: 'var(--c-tools)',   note: n => `${fa(n)} قلم`, pick: true },
+  ];
+
+  /* ---------- Boulderland coaches (one category: مربی) ----------
+     rate = fee per student session, sample value until real pricing is connected */
+  const ROSTER = [
+    { name: 'صبا کرباسیان',       rate: 450000 },
+    { name: 'علی مقنی زاده',      rate: 400000 },
+    { name: 'الناز شجاعی',        rate: 400000 },
+    { name: 'کسری روحانی',        rate: 380000 },
+    { name: 'امیرحسین میر حسینی', rate: 350000 },
+    { name: 'ملیکا استکی',        rate: 350000 },
+    { name: 'احسان',              rate: 320000 },
+  ];
+  const LEAVE_REASONS = ['شخصی', 'استعلاجی', 'مسابقه', 'خانوادگی', 'دوره آموزشی'];
+
+  /* ---------- sample world (replace with API) ----------
+     A fixed member list plus a day-by-day history simulated from EPOCH to today.
+     Package members train with one of our coaches; each visit uses one session
+     and a package is renewed (a sale) on the first visit after it runs out.
+     On today's date, anything after "now" is hidden and visits whose exit is
+     still ahead count as present. */
+  const FIRST = ['آرمان','نگار','کیان','ستاره','پویا','مهسا','امید','ترانه','بردیا','یاسمن','سامان','رامین','نیلوفر','آرش','شیدا','بهراد','پریسا','میلاد','هانیه','سپهر','غزل','نیما','رها','کاوه','آیدا','فرزین','مریم','دانیال','سارا','پدرام','تینا','مانی','دریا','سینا','الهام','بابک','نازنین','کامیار','شبنم','رضا'];
+  const LAST  = ['رضایی','صادقی','مرادی','کریمی','نوری','جعفری','احمدی','شریفی','قاسمی','رحیمی','موسوی','کاظمی','اکبری','تهرانی','یزدانی','سلطانی','فرهادی','عباسی','زمانی','پارسا','افشار','نیک‌نام','بهرامی','وکیلی','ملکی','حیدری','نجفی','امینی','شفیعی','توکلی'];
+  const OPEN = 8 * 60, CLOSE = 22 * 60, LAST_EXIT = 23 * 60;
+  const today = startOfDay(new Date());
+  const EPOCH = Jal.toDate(1404, 1, 1);
+  const shamsiNum = d => { const j = Jal.fromDate(d); return faDigits(`${j.jy}/${String(j.jm).padStart(2, '0')}/${String(j.jd).padStart(2, '0')}`); };
+
+  const world = (() => {
+    let seed = 14040101;
+    const rnd = () => ((seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296);
+    const int = (lo, hi) => lo + Math.floor(rnd() * (hi - lo + 1));
+    const pick = arr => arr[Math.floor(rnd() * arr.length)];
+    const pickW = arr => { let r = rnd(); for (const x of arr) { if ((r -= x.w) < 0) return x; } return arr[arr.length - 1]; };
+    const sample = (arr, n) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a.slice(0, n); };
+    const pay = () => { const r = rnd(); return { m: r < 0.45 ? 'card' : r < 0.8 ? 'c2c' : 'cash', id: 10000000 + Math.floor(rnd() * 89999999) }; };
+
+    const usedNames = new Set(ROSTER.map(c => c.name));
+    const uniqName = () => { let n; do { n = pick(FIRST) + ' ' + pick(LAST); } while (usedNames.has(n)); usedNames.add(n); return n; };
+    const nationalId = () => {
+      const d = Array.from({ length: 9 }, () => int(0, 9)); d[0] = int(0, 6);
+      const s = d.reduce((acc, x, i) => acc + x * (10 - i), 0) % 11;
+      return d.join('') + (s < 2 ? s : 11 - s);
+    };
+    const phone = () => '09' + pick(['12', '19', '35', '36', '37', '38', '39', '01', '02', '03', '05', '30', '33']) + String(int(0, 9999999)).padStart(7, '0');
+
+    // ---- members ----
+    const members = [];
+    let nextCode = 1001;
+    const addMember = (kind, extra = {}) => {
+      const age = kind === 'student' ? int(9, 40) : int(12, 52);
+      const dob = addDays(today, -(age * 365 + int(0, 364)));
+      const m = { id: members.length, kind, code: nextCode++, name: uniqName(), phone: phone(), dob, nid: nationalId(),
+                  insurance: addDays(today, int(-120, 420)), visits: [], payments: [], ...extra };
+      members.push(m);
+      return m;
+    };
+    ROSTER.forEach((c, idx) => {
+      for (let i = 0; i < 24; i++) {
+        const pkg = pickW(PACKAGES);
+        addMember('pkg', { coachIdx: idx, init: { pkg, sessLeft: int(1, pkg.n) },
+                           pkg, sessLeft: 0, purchase: { ...pay(), time: addDays(EPOCH, -int(1, 30)), pkg } });
+      }
+    });
+    members.forEach(m => { if (m.kind === 'pkg') m.sessLeft = m.init.sessLeft; });
+    for (let i = 0; i < 180; i++) addMember('free');
+    for (let i = 0; i < 60; i++) addMember('student');
+    const byCoach = ROSTER.map((_, i) => members.filter(m => m.kind === 'pkg' && m.coachIdx === i));
+    const freeMembers = members.filter(m => m.kind === 'free');
+    const studentMembers = members.filter(m => m.kind === 'student');
+
+    // ---- non-members who still pass the gate ----
+    const STAFF = Array.from({ length: 5 }, (_, i) => ({ name: uniqName(), code: 9001 + i }));
+    const FREELANCERS = Array.from({ length: 6 }, (_, i) => ({ name: uniqName(), code: 8001 + i }));
+    const COACH_CODES = ROSTER.map((_, i) => 7001 + i);
+    // each coach works 3 fixed days a week, 7 hours a day (21 hours a week)
+    const SHIFTS = [[9, 16], [10, 17], [14, 21], [15, 22], [9, 16], [14, 21], [10, 17]];
+    const DAYSETS = [[6, 1, 3], [0, 2, 4], [6, 2, 4], [0, 1, 3], [1, 3, 5], [6, 0, 2], [2, 4, 5]]; // Date.getDay(): 6 = شنبه
+    ROSTER.forEach((r, i) => Object.assign(r, {
+      idx: i, code: COACH_CODES[i], phone: phone(), nid: nationalId(),
+      dob: addDays(today, -(int(24, 45) * 365 + int(0, 364))), insurance: addDays(today, int(-60, 400)),
+      schedule: DAYSETS[i].map(day => ({ day, from: SHIFTS[i][0], to: SHIFTS[i][1] })),
+    }));
+
+    function simDay(date) {
+      const T = min => new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, Math.round(min));
+      const visits = [], sales = [], rentals = [];
+      const visit = (v, inMin, dur) => { v.time = T(inMin); v.out = T(Math.min(inMin + dur, LAST_EXIT)); v.left = true; visits.push(v); if (v.member) v.member.visits.push(v); return v; };
+
+      // coaches, leaves, and their package students
+      const coaches = ROSTER.map((r, idx) => {
+        const sched = r.schedule.find(x => x.day === date.getDay()) || null;
+        let leave = null;
+        if (sched) {
+          const x = rnd();
+          if (x < 0.06) leave = { type: 'daily', reason: pick(LEAVE_REASONS), date };
+          else if (x < 0.12) { const from = sched.to - int(2, 3); leave = { type: 'hourly', from, to: sched.to, reason: pick(LEAVE_REASONS), date }; }
+        }
+        return { ...r, idx, date, sched, leave, arrived: false, lateMin: 0, students: [], income: 0 };
+      });
+      coaches.forEach(c => {
+        if (!c.sched || (c.leave && c.leave.type === 'daily')) return;
+        const start = c.sched.from * 60, end = (c.leave ? c.leave.from : c.sched.to) * 60;
+        const inMin = start + (rnd() < 0.7 ? -int(0, 12) : int(1, 25));
+        const outMin = c.leave ? end + int(-5, 5) : end + int(-15, 40);
+        const dur = outMin - inMin;
+        c.arrived = true;
+        c.lateMin = Math.max(0, inMin - start);
+        c.person = visit({ name: c.name, code: c.code, cat: 'coach', coach: c }, inMin, dur);
+        c.time = c.person.time;
+        sample(byCoach[c.idx], int(6, 11)).forEach(m => {
+          const tin = inMin + int(0, Math.max(0, dur - 90));
+          if (!m.sessLeft) { // package finished: renew on this visit
+            const pkg = pickW(PACKAGES), p = pay(), time = T(tin - 2);
+            m.pkg = pkg; m.sessLeft = pkg.n; m.purchase = { ...p, time, pkg };
+            sales.push({ pkg, price: pkg.price, time, pay: p, member: m });
+            m.payments.push({ time, service: `پکیج ${pkg.label}`, price: pkg.price, pay: p });
+          }
+          m.sessLeft--;
+          c.students.push(visit({ member: m, name: m.name, code: m.code, cat: 'pkg', pkg: m.pkg, sessLeft: m.sessLeft,
+                                  pay: { m: m.purchase.m, id: m.purchase.id }, coachOf: c }, tin, int(60, 120)));
+        });
+        c.income = c.students.length * c.rate;
+      });
+
+      const spread = () => OPEN + rnd() * (CLOSE - 30 - OPEN);
+      sample(freeMembers, int(25, 45)).forEach(m => {
+        const p = pay(), v = visit({ member: m, name: m.name, code: m.code, cat: 'free', pay: p, price: FREE_PRICE }, spread(), int(60, 180));
+        m.payments.push({ time: v.time, service: 'ورودی آزاد', price: FREE_PRICE, pay: p });
+      });
+      // freelance coaches bring their own شاگرد آزاد; they pay the entry fee or get تخفیف مربی
+      const fcs = sample(FREELANCERS, int(1, 3)).map(f => {
+        const inMin = OPEN + rnd() * 480, dur = int(180, 300);
+        return { inMin, dur, v: visit({ name: f.name, code: f.code, cat: 'fcoach', pay: rnd() < 0.5 ? { m: 'disc' } : pay(), price: FREE_PRICE }, inMin, dur) };
+      });
+      sample(studentMembers, int(8, 18)).forEach(m => {
+        const fc = pick(fcs), p = pay();
+        const v = visit({ member: m, name: m.name, code: m.code, cat: 'student', pay: p, price: STUDENT_PRICE, coachOf: fc.v },
+                        fc.inMin + rnd() * Math.max(0, fc.dur - 60), int(60, 120));
+        m.payments.push({ time: v.time, service: 'جلسه شاگرد آزاد', price: STUDENT_PRICE, pay: p });
+      });
+      STAFF.forEach((s, i) => { if (rnd() < 0.85) visit({ name: s.name, code: s.code, cat: 'staff' }, i % 2 ? 14 * 60 : OPEN - 30, 480); });
+
+      // equipment is rented by members who came in that day
+      const memberVisits = visits.filter(v => v.member);
+      for (let i = 0, n = int(10, 35); i < n && memberVisits.length; i++) {
+        const v = pick(memberVisits), t = pickW(TOOLS), p = pay();
+        const time = new Date(v.time.getTime() + int(2, 15) * 60000);
+        rentals.push({ tool: t, price: t.price, time, pay: p, member: v.member });
+        v.member.payments.push({ time, service: `ابزار: ${t.label}`, price: t.price, pay: p });
+      }
+      return { date, visits, coaches, sales, rentals };
+    }
+
+    const days = new Map();
+    for (let d = EPOCH; d <= today; d = addDays(d, 1)) days.set(d.getTime(), simDay(d));
+    members.forEach(m => { m.visits.sort((a, b) => a.time - b.time); m.payments.sort((a, b) => a.time - b.time); });
+    return { members, days };
+  })();
+
+  /* ---------- member state at "now" ---------- */
+  const isNow = t => t <= new Date();
+  function memberNow(m) {
+    const seen = m.visits.filter(v => isNow(v.time));
+    const last = seen[seen.length - 1] || null;
+    let pkg = null, sessLeft = null;
+    if (m.kind === 'pkg') {
+      const lastPkg = [...seen].reverse().find(v => v.cat === 'pkg');
+      pkg = lastPkg ? lastPkg.pkg : m.init.pkg;
+      sessLeft = lastPkg ? lastPkg.sessLeft : m.init.sessLeft;
+    }
+    return { last, pkg, sessLeft, coach: m.kind === 'pkg' ? ROSTER[m.coachIdx] : null };
+  }
+
+  /* ---------- one day as seen now ---------- */
+  const EMPTY_COACHES = date => ROSTER.map((r, idx) => ({ ...r, idx, date, sched: null, leave: null, arrived: false, students: [], income: 0 }));
+  function getDay(d) {
+    const day = world.days.get(d.getTime());
+    if (!day) return { date: d, live: false, people: [], coaches: EMPTY_COACHES(d), sales: [], rentals: [] };
+    const live = sameDay(d, today);
+    if (!live) return { ...day, live, people: day.visits };
+    const now = new Date(), ok = t => t <= now;
+    day.visits.forEach(v => { v.left = v.out <= now; });
+    const coaches = day.coaches.map(c => {
+      const arrived = c.arrived && ok(c.person.time);
+      const students = arrived ? c.students.filter(s => ok(s.time)) : [];
+      return { ...c, arrived, students, income: students.length * c.rate };
+    });
+    return { date: d, live, people: day.visits.filter(v => ok(v.time)), coaches,
+             sales: day.sales.filter(e => ok(e.time)), rentals: day.rentals.filter(e => ok(e.time)) };
+  }
+
+  /* ---------- range state & aggregation ---------- */
+  let range = { start: today, end: today };
+  let data = null;
+
+  function buildRange(start, end) {
+    const days = [];
+    for (let d = start; d <= end; d = addDays(d, 1)) days.push(getDay(d));
+    const single = days.length === 1, live = single && days[0].live;
+    const people = days.flatMap(x => x.people);
+    const coaches = ROSTER.map((r, i) => {
+      const recs = days.map(x => x.coaches[i]);
+      const arrived = recs.filter(c => c.arrived);
+      const day = single ? recs[0] : null;
+      return {
+        ...r, idx: i, day,
+        records: arrived, presentDays: arrived.length,
+        inNow: !!(live && day.arrived && !day.person.left),
+        students: arrived.flatMap(c => c.students),
+        income: arrived.reduce((s, c) => s + c.income, 0),
+        leaves: recs.filter(c => c.leave).map(c => c.leave),
+      };
+    });
+    const sales = days.flatMap(x => x.sales), rentals = days.flatMap(x => x.rentals);
+    const pkgItems = PACKAGES.map(p => ({ item: p.label, price: p.price, qty: sales.filter(e => e.pkg === p).length }));
+    const toolItems = TOOLS.map(t => ({ item: t.label, price: t.price, qty: rentals.filter(e => e.tool === t).length }));
+    const total = items => items.reduce((s, x) => s + x.price * x.qty, 0);
+    const qty = items => items.reduce((s, x) => s + x.qty, 0);
+    const nFree = people.filter(p => p.cat === 'free').length, nStudent = people.filter(p => p.cat === 'student').length;
+    // paying freelance coaches are charged the same entry fee as ورودی آزاد
+    const nFcPaid = people.filter(p => p.cat === 'fcoach' && p.pay && p.pay.m !== 'disc').length;
+    const amounts = {
+      free:    [(nFree + nFcPaid) * FREE_PRICE, nFree, nFcPaid ? `${fa(nFree)} ورودی، ${fa(nFcPaid)} مربی آزاد` : null],
+      pkg:     [total(pkgItems), qty(pkgItems)],
+      student: [nStudent * STUDENT_PRICE, nStudent],
+      tools:   [total(toolItems), qty(toolItems)],
+    };
+    const revenue = REV_DEFS.map(def => {
+      const [amount, count, note] = amounts[def.id];
+      return { ...def, value: amount, amount, count, note: note || def.note(count) };
+    });
+    return { start, end, days, single, live, now: new Date(), people, coaches, revenue, pkgItems, toolItems };
+  }
+
+  /* ---------- presets ---------- */
+  const PRESETS = [
+    { id: 'today',       label: 'امروز',     get: () => [today, today] },
+    { id: 'yesterday',   label: 'دیروز',     get: () => [addDays(today, -1), addDays(today, -1)] },
+    { id: 'thisWeek',    label: 'این هفته',  get: () => [addDays(today, -((today.getDay() + 1) % 7)), today], sub: () => 'از شنبه تا امروز' },
+    { id: 'thisMonth',   label: 'این ماه',   get: () => { const j = Jal.fromDate(today); return [Jal.toDate(j.jy, j.jm, 1), today]; },
+      sub: () => `${MONTHS[Jal.fromDate(today).jm - 1]} تا امروز` },
+    { id: 'lastMonth',   label: 'ماه گذشته', get: () => { let { jy, jm } = Jal.fromDate(today); if (--jm < 1) { jm = 12; jy--; } return [Jal.toDate(jy, jm, 1), Jal.toDate(jy, jm, Jal.monthLength(jy, jm))]; },
+      sub: () => { let { jy, jm } = Jal.fromDate(today); if (--jm < 1) { jm = 12; jy--; } return `${MONTHS[jm - 1]} ${faPlain(jy)}`; } },
+    { id: 'lastQuarter', label: 'فصل گذشته', get: () => { const [jy, q] = lastQuarter(); return [Jal.toDate(jy, q * 3 + 1, 1), Jal.toDate(jy, q * 3 + 3, Jal.monthLength(jy, q * 3 + 3))]; },
+      sub: () => { const [jy, q] = lastQuarter(); return `${SEASONS[q]} ${faPlain(jy)}`; } },
+  ];
+  function lastQuarter() { let { jy, jm } = Jal.fromDate(today); let q = Math.floor((jm - 1) / 3) - 1; if (q < 0) { q = 3; jy--; } return [jy, q]; }
+  const matchPreset = (s, e) => PRESETS.find(p => { const [a, b] = p.get(); return sameDay(a, s) && sameDay(b, e); });
+
+  /* ---------- tooltip ---------- */
+  const tip = $('#tip');
+  const showTip = (html, x, y) => {
+    tip.innerHTML = html;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.min(Math.max(8, x - w / 2), innerWidth - w - 8) + 'px';
+    tip.style.top = Math.max(8, y - h - 14) + 'px';
+    tip.classList.add('show');
+  };
+  const hideTip = () => tip.classList.remove('show');
+
+  /* ---------- donut ---------- */
+  function donut(host, legend, items, opt) {
+    host.innerHTML = ''; legend.innerHTML = '';
+    const total = items.reduce((s, i) => s + i.value, 0);
+    const pickable = it => !!opt.onPick && (!opt.canPick || opt.canPick(it));
+    const NS = 'http://www.w3.org/2000/svg', GAP = 1.2;
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', items.map(i => `${i.label}: ${fa(i.value)}`).join('، '));
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('transform', 'rotate(-90 50 50)');
+    const mk = cls => { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', 50); c.setAttribute('cy', 50); c.setAttribute('r', 42); c.setAttribute('pathLength', 100); c.setAttribute('class', cls); return c; };
+    g.appendChild(mk('track'));
+    const segs = items.map(it => { const c = mk('seg'); c.style.stroke = it.color; g.appendChild(c); return c; });
+    svg.appendChild(g);
+
+    const core = document.createElement('div');
+    core.className = 'donut-core';
+    core.innerHTML = '<b class="num"></b><span></span>';
+    const setCore = ([a, b]) => { core.firstChild.textContent = a; core.lastChild.textContent = b; };
+    setCore(opt.idle());
+
+    const layout = p => {
+      let acc = 0;
+      items.forEach((it, i) => {
+        const share = total ? (it.value / total) * 100 : 0;
+        const len = Math.max(0, share * p - (share ? GAP : 0));
+        segs[i].setAttribute('stroke-dasharray', `${len} ${100 - len}`);
+        segs[i].setAttribute('stroke-dashoffset', -(acc * p + GAP / 2));
+        acc += share;
+      });
+    };
+    host.append(svg, core);
+    layout(canAnimate ? 0 : 1);
+
+    const rows = items.map(it => {
+      const li = document.createElement('li');
+      const pct = total ? (it.value / total) * 100 : 0;
+      const el = document.createElement(pickable(it) ? 'button' : 'div');
+      el.className = 'row';
+      if (pickable(it)) { el.type = 'button'; el.addEventListener('click', () => opt.onPick(it)); }
+      el.innerHTML = opt.row(it, pct);
+      li.appendChild(el);
+      legend.appendChild(li);
+      return el;
+    });
+
+    const focus = i => {
+      host.classList.toggle('has-focus', i != null);
+      segs.forEach((s, j) => s.classList.toggle('on', j === i));
+      rows.forEach((r, j) => r.classList.toggle('on', j === i));
+      setCore(i == null ? opt.idle() : opt.on(items[i], total ? (items[i].value / total) * 100 : 0));
+    };
+    segs.forEach((s, i) => {
+      s.addEventListener('pointerenter', () => focus(i));
+      s.addEventListener('pointermove', e => showTip(`${items[i].label}  <b class="num">${opt.tip(items[i])}</b>`, e.clientX, e.clientY));
+      s.addEventListener('pointerleave', () => { focus(null); hideTip(); });
+      if (pickable(items[i])) { s.style.cursor = 'pointer'; s.addEventListener('click', () => { hideTip(); opt.onPick(items[i]); }); } else s.style.cursor = 'default';
+    });
+    rows.forEach((r, i) => {
+      r.addEventListener('pointerenter', () => focus(i));
+      r.addEventListener('pointerleave', () => focus(null));
+      r.addEventListener('focus', () => focus(i));
+      r.addEventListener('blur', () => focus(null));
+    });
+    if (canAnimate) M.animate(0, 1, { duration: 1.1, delay: opt.delay || 0, ease: EASE, onUpdate: layout });
+  }
+
+  /* ---------- bars ---------- */
+  // items: { name, sub, value, display, color, faded, onClick, aria }
+  function bars(ul, items) {
+    ul.innerHTML = '';
+    const max = Math.max(1, ...items.map(i => i.value));
+    items.forEach(it => {
+      const li = document.createElement('li');
+      const el = document.createElement(it.onClick ? 'button' : 'div');
+      el.className = 'bar' + (it.faded ? ' away' : '');
+      if (it.onClick) {
+        el.type = 'button';
+        el.setAttribute('aria-label', it.aria);
+        el.addEventListener('click', e => { e.stopPropagation(); it.onClick(); });
+      } else {
+        el.addEventListener('click', e => e.stopPropagation());
+      }
+      el.innerHTML = `<span class="who"><b title="${it.name}">${it.name}</b><span>${it.sub}</span></span>
+        <span class="track"><span class="fill" style="width:${(it.value / max) * 100}%${it.color ? `;background:${it.color}` : ''}"></span></span>
+        <span class="n num">${it.display}</span>`;
+      li.appendChild(el);
+      ul.appendChild(li);
+    });
+    if (canAnimate) M.animate(ul.querySelectorAll('.fill'), { scaleX: [0, 1] }, { duration: 0.8, ease: EASE, delay: M.stagger(0.05, { startDelay: 0.15 }) });
+  }
+  function coachSub(c) {
+    if (c.day) {
+      const d = c.day;
+      if (d.leave && d.leave.type === 'daily') return `مرخصی روزانه، ${d.leave.reason}`;
+      if (!d.sched) return data.live ? 'امروز برنامه ندارد' : 'روز کاری نبود';
+      if (!d.arrived) return data.live ? 'هنوز وارد نشده' : 'بدون حضور';
+      if (data.live && d.person.left) return `خارج شده ${faTime(d.person.out)}`;
+      if (d.leave) return `مرخصی ساعتی ${faHour(d.leave.from)} تا ${faHour(d.leave.to)}`;
+      return `ورود ${faTime(d.time)}`;
+    }
+    return `${fa(c.presentDays)} روز حضور` + (c.leaves.length ? `، ${fa(c.leaves.length)} مرخصی` : '');
+  }
+  const sortBy = (list, key) => [...list].sort((a, b) => (key(b) - key(a)) || (a.idx - b.idx));
+
+  /* ---------- list dialog ---------- */
+  const PAGE = 150;
+  const dlg = $('#listDialog'), panel = dlg.querySelector('.sheet-panel');
+  const rowsEl = $('#rows'), footEl = $('#dlgFoot'), emptyEl = $('#empty'), dlgSearch = $('#dlgSearch'), moreBtn = $('#dlgMore');
+  let view = null, sortDir = 'desc', opener = null, shown = PAGE;
+
+  const norm = s => String(s).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/ي/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ').trim();
+  const DASH = '<span class="dash">-</span>';
+  const memberLabel = p => (p.cat === 'pkg' && p.pkg ? `پکیج ${p.pkg.label}` : CAT[p.cat].label);
+  const tag = p => `<span class="tag"><i class="swatch" style="background:${CAT[p.cat].color}"></i>${memberLabel(p)}</span>`;
+
+  // column registry for people tables
+  const COLS = {
+    name:   { label: 'نام و نام خانوادگی', cell: p => `<span class="person"><span class="av">${p.name.trim()[0]}</span>${p.member ? `<button type="button" class="name-link" data-mid="${p.member.id}">${p.name}</button>` : p.coach ? `<button type="button" class="name-link" data-cid="${p.coach.idx}">${p.name}</button>` : p.name}</span>` },
+    code:   { label: 'کد', cls: 'code num', cell: p => faPlain(p.code) },
+    member: { label: 'عضویت', cell: tag },
+    sessions: { label: 'جلسات باقی‌مانده', cls: 'num', cell: p => !p.pkg ? DASH
+              : p.sessLeft ? `<b>${fa(p.sessLeft)}</b><span class="unit">از ${fa(p.pkg.n)}</span>` : '<span class="ltag daily">تمام شد</span>' },
+    coach:  { label: 'مربی', cell: p => p.coachOf ? `<span class="coach-name">${p.coachOf.name}</span>` : DASH },
+    pay:    { label: 'روش پرداخت', cell: p => p.pay ? `<span class="pay pay-${p.pay.m}">${PAY[p.pay.m]}</span>` : DASH },
+    payId:  { label: 'شناسه پرداخت', cls: 'code num', cell: p => p.pay && p.pay.id ? faPlain(p.pay.id) : DASH },
+    in:     { sort: true, cls: 'time num', cell: p => data.single
+              ? `<b>${faTime(p.time)}</b>`
+              : `<b>${faTime(p.time)}</b><small>${shortWeekday(p.time)}</small>` },
+    out:    { label: 'ساعت خروج', cls: 'time num', cell: p => p.left ? `<b>${faTime(p.out)}</b>` : '<span class="ltag hourly">حاضر</span>' },
+  };
+  const PAYCOLS = ['name', 'code', 'member', 'sessions', 'coach', 'pay', 'payId'];
+  // columns that do not apply when a table shows a single membership type
+  const HIDE_BY_CAT = {
+    free:    ['sessions', 'coach'],
+    student: ['sessions'],
+    coach:   ['sessions', 'coach', 'pay', 'payId'],
+    fcoach:  ['sessions', 'coach'],
+    staff:   ['sessions', 'coach', 'pay', 'payId'],
+  };
+  const colsFor = (catId, cols) => cols.filter(c => !(HIDE_BY_CAT[catId] || []).includes(c));
+  const col = c => (typeof c === 'string' ? COLS[c] : c);
+
+  function renderHead() {
+    if (view.kind === 'items') {
+      $('#dlgHead').innerHTML = '<th scope="col">آیتم</th><th scope="col" class="money">قیمت</th><th scope="col" class="money">تعداد</th><th scope="col" class="money">جمع</th>';
+      return;
+    }
+    $('#dlgHead').innerHTML = view.cols.map(c => {
+      const k = col(c);
+      if (!k.sort) return `<th scope="col">${k.label}</th>`;
+      return `<th scope="col" aria-sort="${sortDir === 'desc' ? 'descending' : 'ascending'}"><button class="sort" id="sortTime" type="button" data-dir="${sortDir}">${data.single ? 'ساعت ورود' : 'تاریخ و ساعت ورود'}<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6l6 -6"/></svg></button></th>`;
+    }).join('');
+    const sb = $('#sortTime');
+    if (sb) sb.addEventListener('click', () => { sortDir = sortDir === 'desc' ? 'asc' : 'desc'; shown = PAGE; renderHead(); renderRows(true); });
+  }
+
+  function renderItems() {
+    const rows = view.rows;
+    const sum = rows.reduce((s, r) => s + r.price * r.qty, 0), qty = rows.reduce((s, r) => s + r.qty, 0);
+    rowsEl.innerHTML = rows.map(r => `<tr>
+      <td class="item">${r.item}</td>
+      <td class="money num">${fa(r.price)}<span class="unit">تومان</span></td>
+      <td class="money num">${fa(r.qty)}</td>
+      <td class="money num"><b>${fa(r.price * r.qty)}</b><span class="unit">تومان</span></td>
+    </tr>`).join('');
+    footEl.innerHTML = `<tr><td>جمع کل</td><td></td><td class="money num">${fa(qty)}</td><td class="money num">${fa(sum)}<span class="unit">تومان</span></td></tr>`;
+    emptyEl.hidden = true; moreBtn.hidden = true;
+    $('#dlgCount').textContent = `${fa(qty)} ${view.unit}، ${fa(sum)} تومان، ${rangeText(data.start, data.end)}`;
+  }
+
+  function renderRows(animate) {
+    if (view.kind === 'items') return renderItems();
+    footEl.innerHTML = '';
+    const q = norm(dlgSearch.value);
+    const list = view.rows
+      .filter(p => !q || norm(p.name).includes(q) || norm(p.code).includes(q) || (p.pay && String(p.pay.id).includes(q)))
+      .sort((a, b) => sortDir === 'desc' ? b.time - a.time : a.time - b.time);
+    rowsEl.innerHTML = list.slice(0, shown).map(p => `<tr>${view.cols.map(c => { const k = col(c); return `<td${k.cls ? ` class="${k.cls}"` : ''}>${k.cell(p)}</td>`; }).join('')}</tr>`).join('');
+    emptyEl.hidden = list.length > 0;
+    const rest = list.length - shown;
+    moreBtn.hidden = rest <= 0;
+    if (rest > 0) moreBtn.textContent = `نمایش ${fa(Math.min(PAGE, rest))} ردیف دیگر از ${fa(rest)}`;
+    const n = view.rows.length;
+    const count = list.length === n ? `${fa(n)} ${view.unit}` : `${fa(list.length)} از ${fa(n)} ${view.unit}`;
+    $('#dlgCount').textContent = `${count}${view.note ? '، ' + view.note : ''}، ${rangeText(data.start, data.end)}`;
+    if (animate && canAnimate && list.length) {
+      M.animate([...rowsEl.children].slice(0, 14), { opacity: [0, 1], y: [6, 0] }, { duration: 0.3, ease: EASE, delay: M.stagger(0.02) });
+    }
+  }
+  moreBtn.addEventListener('click', () => { shown += PAGE; renderRows(false); });
+
+  function openList(v, query = '') {
+    hideTip(); closeCal();
+    opener = document.activeElement;
+    view = v; sortDir = 'desc'; shown = PAGE;
+    $('#dlgTitle').textContent = v.title;
+    $('#dlgTile').className = 'tile ' + (v.tone || 'warm');
+    dlg.querySelector('.sheet-tools').hidden = v.kind === 'items';
+    dlgSearch.value = query;
+    renderHead(); renderRows(false);
+    dlg.showModal();
+    if (query) dlgSearch.focus();
+    document.body.style.overflow = 'hidden';
+    if (canAnimate) {
+      M.animate(panel, { opacity: [0, 1], y: [24, 0], scale: [0.97, 1] }, { type: 'spring', stiffness: 340, damping: 30 });
+      M.animate([...rowsEl.children].slice(0, 14), { opacity: [0, 1], y: [8, 0] }, { duration: 0.35, ease: EASE, delay: M.stagger(0.022, { startDelay: 0.08 }) });
+    }
+  }
+  let closing = false;
+  async function closeList() {
+    if (closing || !dlg.open) return;
+    closing = true;
+    if (canAnimate) await M.animate(panel, { opacity: 0, y: 16, scale: 0.98 }, { duration: 0.18, ease: EASE }).finished;
+    dlg.close();
+    closing = false;
+  }
+  dlg.addEventListener('close', () => {
+    document.body.style.overflow = '';
+    panel.style.opacity = ''; panel.style.transform = '';
+    if (opener && opener.focus) opener.focus();
+  });
+  dlg.addEventListener('cancel', e => { e.preventDefault(); closeList(); });
+  dlg.addEventListener('click', e => { if (e.target === dlg) closeList(); });
+  $('#dlgClose').addEventListener('click', closeList);
+  dlgSearch.addEventListener('input', () => { shown = PAGE; renderRows(false); });
+
+  const present = () => data.people.filter(p => !p.left);
+  const isTeam = id => ['coach', 'fcoach', 'staff'].includes(id);
+  const views = {
+    // تعداد اعضا حاضر
+    present: () => ({ title: 'اعضای حاضر در سالن', rows: present(), unit: 'نفر', cols: [...PAYCOLS, 'in'] }),
+    presentCat: c => ({ title: `${c.label}، حاضر در سالن`, rows: present().filter(p => p.cat === c.id), unit: 'نفر', cols: colsFor(c.id, [...PAYCOLS, 'in']), tone: isTeam(c.id) ? 'green' : 'warm' }),
+    // تعداد کل ورودی ها
+    entries: () => ({ title: 'کل ورودی ها', rows: data.people, unit: 'ورودی', cols: [...PAYCOLS, 'in', 'out'], tone: 'green' }),
+    entriesCat: c => ({ title: `ورودی های ${c.label}`, rows: data.people.filter(p => p.cat === c.id), unit: 'ورودی', cols: colsFor(c.id, [...PAYCOLS, 'in', 'out']), tone: isTeam(c.id) ? 'green' : 'warm' }),
+    entriesStatus: inside => ({ title: inside ? 'حاضر در سالن' : 'خارج شده', rows: data.people.filter(p => inside ? !p.left : p.left), unit: 'نفر', cols: [...PAYCOLS, 'in', 'out'], tone: 'green' }),
+    // coaches
+    coaches: () => ({ title: data.live ? 'مربیان حاضر' : data.single ? 'حضور مربیان' : 'حضور مربیان در بازه', tone: 'green',
+                      rows: data.coaches.flatMap(c => c.records.map(r => r.person)).filter(p => !data.live || !p.left), unit: data.single ? 'مربی' : 'حضور',
+                      cols: ['name', 'code', 'member', { label: 'شاگرد', cls: 'num', cell: p => `<b>${fa(p.coach.students.filter(x => isNow(x.time)).length)}</b>` }, 'in', 'out'] }),
+    students: (c, onlyPresent) => ({ title: onlyPresent ? `شاگردان حاضر ${c.name}` : `شاگردان ${c.name}`, tone: 'green',
+                      rows: onlyPresent ? c.students.filter(p => !p.left) : c.students, unit: 'شاگرد', cols: ['name', 'code', 'member', 'sessions', 'in', 'out'] }),
+    allStudents: () => ({ title: 'شاگرد های مربی ها', rows: data.coaches.flatMap(c => c.students), unit: 'شاگرد', tone: 'green',
+                      cols: ['name', 'code', 'member', 'sessions', 'coach', 'in', 'out'] }),
+    income: c => ({ title: `درآمد ${c.name}`, rows: c.students, unit: 'جلسه', note: `${fa(c.income)} تومان`,
+                      cols: ['name', 'code', 'member', 'sessions', { label: 'مبلغ جلسه', cls: 'num', cell: () => `${fa(c.rate)}<span class="unit">تومان</span>` }, 'in'] }),
+    // جمع دخل روز
+    packages: () => ({ kind: 'items', title: 'فروش پکیج‌ها', rows: data.pkgItems, unit: 'پکیج' }),
+    tools: () => ({ kind: 'items', title: 'ابزار', rows: data.toolItems, unit: 'قلم' }),
+  };
+
+  /* ---------- page: overview ---------- */
+  function renderOverview() {
+    const { people, coaches, revenue, live, single, days } = data;
+    const pct = (n, t) => (t ? (n / t) * 100 : 0);
+
+    // تعداد اعضا حاضر (live only)
+    $('#presentOn').hidden = !live;
+    $('#presentOff').hidden = live;
+    $('#membersAll').hidden = !live;
+    if (live) {
+      const pres = present();
+      countUp($('#membersTotal'), pres.length);
+      donut($('#membersDonut'), $('#membersLegend'), CATS.map(c => ({ ...c, value: pres.filter(p => p.cat === c.id).length })), {
+        idle: () => [fa(pres.length), 'نفر حاضر'],
+        on: it => [fa(it.value), it.label],
+        tip: it => fa(it.value) + ' نفر',
+        onPick: it => openList(views.presentCat(it)),
+        delay: 0.1,
+        row: (it, p) => `<i class="swatch" style="background:${it.color}"></i><span class="lbl">${it.label}</span><span class="val num">${fa(it.value)}</span><span class="pct num">${faPct(p)}</span><svg class="ic go" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6l6 6"/></svg>`,
+      });
+    }
+
+    // تعداد کل ورودی ها
+    const nIn = people.filter(p => !p.left).length, nOut = people.length - nIn;
+    countUp($('#entriesTotal'), people.length);
+    $('#entriesUnit').textContent = single ? 'ورودی' : 'ورودی در این بازه';
+    const [sIn, sOut] = $('#entriesSplit').children;
+    sIn.style.width = pct(nIn, people.length) + '%'; sIn.hidden = !nIn;
+    sOut.style.width = pct(nOut, people.length) + '%'; sOut.hidden = !nOut;
+    $('#chipIn b').textContent = fa(nIn);   $('#chipIn').disabled = !nIn;
+    $('#chipOut b').textContent = fa(nOut); $('#chipOut').disabled = !nOut;
+    bars($('#entryBars'), CATS.map(c => {
+      const all = people.filter(p => p.cat === c.id), inside = all.filter(p => !p.left).length;
+      return { name: c.label, sub: live ? `${fa(inside)} حاضر، ${fa(all.length - inside)} خارج شده` : `${faPct(pct(all.length, people.length))} از کل`,
+               value: all.length, display: fa(all.length), color: c.color, faded: !all.length,
+               onClick: all.length ? () => openList(views.entriesCat(c)) : null, aria: `${c.label}: ${fa(all.length)} ورودی. نمایش لیست` };
+    }));
+    $('#entriesFoot').textContent = live ? 'شامل حاضرین و کسانی که سالن را ترک کرده‌اند' : `همه ورودی‌های ${rangeText(data.start, data.end)}`;
+
+    // تعداد مربیان حاضر
+    const studentsShown = c => (live ? c.students.filter(p => !p.left).length : c.students.length);
+    countUp($('#coachTotal'), live ? coaches.filter(c => c.inNow).length : coaches.filter(c => c.presentDays).length, 0.8);
+    const avg = coaches.reduce((s, c) => s + c.presentDays, 0) / days.length;
+    $('#coachOf').textContent = single ? `از ${fa(coaches.length)} مربی` : `از ${fa(coaches.length)} مربی، میانگین ${faDec(avg)} در روز`;
+    bars($('#coachBars'), sortBy(coaches, c => (live ? c.inNow : c.presentDays > 0) * 1000 + studentsShown(c)).map(c => ({
+      name: c.name, sub: coachSub(c), value: studentsShown(c), display: fa(studentsShown(c)), faded: live ? !c.inNow : !c.presentDays,
+      onClick: c.presentDays ? () => openList(views.students(c, live && c.inNow)) : null,
+      aria: `${c.name}، ${fa(studentsShown(c))} شاگرد. نمایش لیست شاگردان`,
+    })));
+    $('#coachFoot').textContent = live ? 'تعداد شاگردانی که الان با هر مربی تمرین می‌کنند' : 'روی نام هر مربی بزنید تا شاگردانش را ببینید';
+
+    // جمع دخل روز
+    const revTotal = revenue.reduce((s, r) => s + r.amount, 0);
+    $('#revenueTitle').textContent = single ? 'جمع دخل روز' : 'جمع دخل';
+    countUp($('#revenueTotal'), revTotal, 1.3);
+    donut($('#revenueDonut'), $('#revenueLegend'), revenue, {
+      idle: () => revTotal >= 1e9 ? [faDec(revTotal / 1e9, 2), 'میلیارد تومان'] : [faDec(revTotal / 1e6), 'میلیون تومان'],
+      on: (it, p) => [faPct(p), it.label],
+      tip: it => fa(it.value) + ' تومان',
+      onPick: it => openList(it.id === 'pkg' ? views.packages() : views.tools()),
+      canPick: it => !!it.pick,
+      delay: 0.25,
+      row: (it, p) => `<i class="swatch" style="background:${it.color}"></i><span class="lbl">${it.label}${it.pick ? '<svg class="ic go" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17l-10 -10"/><path d="M16 7l-9 0l0 9"/></svg>' : ''}</span><span class="val num">${money(it.value)}</span><span class="sub">${it.note}، ${faPct(p)}</span>`,
+    });
+    $('#revenueAsOf').textContent = live ? `جمع تراکنش‌های امروز تا ساعت ${faTime(data.now)}، روی پکیج یا ابزار بزنید` : `جمع کل تراکنش‌های ${rangeText(data.start, data.end)}`;
+  }
+
+  /* ---------- page: coaches ---------- */
+  function renderCoaches() {
+    const { coaches, single } = data;
+    const totalStudents = coaches.reduce((s, c) => s + c.students.length, 0);
+    countUp($('#stTotal'), totalStudents, 0.8);
+    bars($('#stBars'), sortBy(coaches, c => (c.presentDays > 0) * 1e4 + c.students.length).map(c => ({
+      name: c.name, sub: coachSub(c), value: c.students.length, display: fa(c.students.length), faded: !c.presentDays,
+      onClick: c.presentDays ? () => openList(views.students(c, false)) : null,
+      aria: `${c.name}، ${fa(c.students.length)} شاگرد. نمایش لیست شاگردان`,
+    })));
+
+    countUp($('#incTotal'), coaches.reduce((s, c) => s + c.income, 0), 1.2);
+    bars($('#incBars'), sortBy(coaches, c => c.income).map(c => ({
+      name: c.name,
+      sub: c.presentDays ? `${fa(c.students.length)} جلسه` : (single && c.leaves.length ? 'مرخصی روزانه' : 'بدون حضور'),
+      value: c.income, display: compact(c.income), faded: !c.presentDays,
+      onClick: c.presentDays ? () => openList(views.income(c)) : null,
+      aria: `درآمد ${c.name}: ${fa(c.income)} تومان. نمایش جلسه‌ها`,
+    })));
+    $('#incFoot').textContent = single ? 'بر اساس جلسه‌های ثبت‌شده در این روز' : 'بر اساس جلسه‌های ثبت‌شده در این بازه';
+
+    const leaves = coaches.flatMap(c => c.leaves.map(l => ({ c, l }))).sort((a, b) => b.l.date - a.l.date || a.c.idx - b.c.idx);
+    countUp($('#lvTotal'), leaves.length, 0.6);
+    const dailyN = leaves.filter(x => x.l.type === 'daily').length;
+    $('#lvOf').textContent = single
+      ? `${fa(coaches.filter(c => !c.leaves.length).length)} مربی بدون مرخصی`
+      : `${fa(dailyN)} روزانه، ${fa(leaves.length - dailyN)} ساعتی`;
+    const body = $('#lvBody');
+    if (!leaves.length) {
+      body.innerHTML = `<div class="empty-state"><span class="tile green" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12l5 5l10 -10"/></svg></span><b>${single ? 'در این روز مرخصی ثبت نشده' : 'در این بازه مرخصی ثبت نشده'}</b>همه مربی‌ها طبق برنامه در دسترس بوده‌اند.</div>`;
+    } else {
+      body.innerHTML = `<ul class="leaves${leaves.length > 4 ? ' scroll' : ''}">${leaves.map(({ c, l }) => {
+        const span = l.type === 'daily' ? 'تمام روز' : `از ${faHour(l.from)} تا ${faHour(l.to)}`;
+        return `<li class="leave">
+          <span class="av">${c.name[0]}</span>
+          <div><b>${c.name}</b><span class="when num">${single ? span : `${shortWeekday(l.date)}، ${span}`}</span><span class="why">علت: ${l.reason}</span></div>
+          <span class="ltag ${l.type}">${l.type === 'daily' ? 'روزانه' : 'ساعتی'}</span>
+        </li>`; }).join('')}</ul>`;
+      if (canAnimate) M.animate([...body.querySelectorAll('.leave')].slice(0, 8), { opacity: [0, 1], y: [8, 0] }, { duration: 0.4, ease: EASE, delay: M.stagger(0.05) });
+    }
+    renderRoster();
+    $('#lvFoot').textContent = data.live ? 'مرخصی‌های ثبت‌شده برای امروز' : `مرخصی‌های ثبت‌شده برای ${rangeText(data.start, data.end)}`;
+  }
+
+  $('#membersAll').addEventListener('click', () => openList(views.present()));
+  $('#entriesAll').addEventListener('click', () => openList(views.entries()));
+  $('#chipIn').addEventListener('click', () => openList(views.entriesStatus(true)));
+  $('#chipOut').addEventListener('click', () => openList(views.entriesStatus(false)));
+  $('#coachesAll').addEventListener('click', e => { e.stopPropagation(); openList(views.coaches()); });
+  $('#coachCard').addEventListener('click', () => openList(views.coaches()));
+  $('#studentsAll').addEventListener('click', () => openList(views.allStudents()));
+  $('#topSearch').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { openList(views.entries(), e.target.value); e.target.value = ''; }
+  });
+
+  /* ---------- reusable Shamsi date-range picker ---------- */
+  const IC = {
+    prev: '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6l-6 6"/></svg>',
+    next: '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6l6 6"/></svg>',
+    cal:  '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/></svg>',
+    chev: '<svg class="ic chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6l6 -6"/></svg>',
+  };
+  const pickers = [];
+  function makePicker(host, { get, set, presets }) {
+    host.innerHTML = `
+      <button class="icon-btn dp-prev" type="button" aria-label="بازه قبل">${IC.prev}</button>
+      <button class="dp-btn" type="button" aria-haspopup="dialog" aria-expanded="false">${IC.cal}<span class="dp-label num"></span><span class="today-tag dp-tag"></span>${IC.chev}</button>
+      <button class="icon-btn dp-next" type="button" aria-label="بازه بعد">${IC.next}</button>
+      <div class="cal" role="dialog" aria-label="انتخاب بازه تاریخ">
+        <div class="cal-presets" role="group" aria-label="بازه‌های آماده"></div>
+        <div>
+          <div class="cal-fields">
+            <div class="cal-field f-start"><small>از تاریخ</small><b class="num"></b></div>
+            <div class="cal-field f-end"><small>تا تاریخ</small><b class="num"></b></div>
+          </div>
+          <div class="cal-head">
+            <button class="icon-btn cal-prev" type="button" aria-label="ماه قبل">${IC.prev}</button>
+            <b class="cal-title num"></b>
+            <button class="icon-btn cal-next" type="button" aria-label="ماه بعد">${IC.next}</button>
+          </div>
+          <div class="cal-grid"></div>
+          <div class="cal-foot">
+            <button type="button" class="primary cal-apply">اعمال</button>
+            <button type="button" class="cal-cancel">انصراف</button>
+          </div>
+        </div>
+      </div>`;
+    const q = s => host.querySelector(s);
+    const cal = q('.cal'), btn = q('.dp-btn'), grid = q('.cal-grid'), presetsEl = q('.cal-presets');
+    const match = (s, e) => presets.find(p => { const [a, b] = p.get(); return sameDay(a, s) && sameDay(b, e); });
+    let calY, calM, pStart = null, pEnd = null, hover = null, cells = [];
+
+    const apply = (s, e) => {
+      s = startOfDay(s); e = startOfDay(e);
+      if (s > e) [s, e] = [e, s];
+      if (e > today) e = today;
+      if (s < EPOCH) s = EPOCH;
+      set(s, e);
+      refresh();
+    };
+    function refresh() {
+      const { start: s, end: e } = get();
+      const p = match(s, e);
+      q('.dp-label').textContent = rangeText(s, e, true);
+      q('.dp-tag').textContent = p ? p.label : `${fa(dayDiff(s, e) + 1)} روز`;
+      q('.dp-tag').hidden = !p && sameDay(s, e);
+      q('.dp-next').disabled = e >= today;
+      q('.dp-prev').disabled = s <= EPOCH;
+    }
+    // step a whole Shamsi month / quarter when the range is one, otherwise step by its length
+    function step(dir) {
+      const { start: s, end: e } = get();
+      const a = Jal.fromDate(s), b = Jal.fromDate(e);
+      const isMonthEnd = j => j.jd === Jal.monthLength(j.jy, j.jm);
+      const shiftMonths = n => {
+        let jy = a.jy, jm = a.jm + n * dir;
+        while (jm < 1) { jm += 12; jy--; } while (jm > 12) { jm -= 12; jy++; }
+        let ey = jy, em = jm + n - 1; while (em > 12) { em -= 12; ey++; }
+        apply(Jal.toDate(jy, jm, 1), minD(Jal.toDate(ey, em, Jal.monthLength(ey, em)), today));
+      };
+      const sameMonth = a.jy === b.jy && a.jm === b.jm;
+      if (a.jd === 1 && sameMonth && (isMonthEnd(b) || sameDay(e, today))) return shiftMonths(1);
+      if (a.jd === 1 && (a.jm - 1) % 3 === 0 && a.jy === b.jy && b.jm === a.jm + 2 && (isMonthEnd(b) || sameDay(e, today))) return shiftMonths(3);
+      const len = dayDiff(s, e) + 1;
+      let ns = addDays(s, dir * len), ne = addDays(e, dir * len);
+      if (ne > today) { ne = today; ns = addDays(today, -(len - 1)); }
+      if (ns < EPOCH) { ns = EPOCH; ne = minD(addDays(EPOCH, len - 1), today); }
+      apply(ns, ne);
+    }
+
+    function renderPresets() {
+      presetsEl.innerHTML = '';
+      const { start, end } = get(), cur = match(start, end);
+      presets.forEach(p => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-pressed', String(cur === p));
+        b.innerHTML = `${p.label}${p.sub ? `<small>${p.sub()}</small>` : ''}`;
+        b.addEventListener('click', () => { const [s, e] = p.get(); apply(s, e); close(); btn.focus(); });
+        presetsEl.appendChild(b);
+      });
+    }
+    function paint() {
+      const lo = pStart, hi = pEnd || (hover && lo && hover > lo ? hover : lo);
+      cells.forEach(({ el, d }) => {
+        el.classList.toggle('start', !!(lo && sameDay(d, lo)));
+        el.classList.toggle('end', !!(hi && sameDay(d, hi)));
+        el.classList.toggle('in', !!(lo && hi && d > lo && d < hi));
+        el.setAttribute('aria-pressed', String(!!(lo && hi && d >= lo && d <= hi)));
+      });
+      q('.f-start b').textContent = pStart ? fullDate(pStart) : 'انتخاب کنید';
+      q('.f-end b').textContent = pEnd ? fullDate(pEnd) : (pStart ? 'انتخاب کنید' : '-');
+      q('.f-start').classList.toggle('on', !pStart || !!pEnd);
+      q('.f-end').classList.toggle('on', !!pStart && !pEnd);
+    }
+    function renderMonth() {
+      const tj = Jal.fromDate(today), ej = Jal.fromDate(EPOCH);
+      q('.cal-title').textContent = `${MONTHS[calM - 1]} ${faPlain(calY)}`;
+      q('.cal-next').disabled = calY > tj.jy || (calY === tj.jy && calM >= tj.jm);
+      q('.cal-prev').disabled = calY < ej.jy || (calY === ej.jy && calM <= ej.jm);
+      grid.innerHTML = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'].map(w => `<span class="cal-wd" aria-hidden="true">${w}</span>`).join('');
+      const lead = (Jal.toDate(calY, calM, 1).getDay() + 1) % 7; // Saturday-first week
+      for (let i = 0; i < lead; i++) grid.insertAdjacentHTML('beforeend', '<span></span>');
+      cells = [];
+      for (let dd = 1, len = Jal.monthLength(calY, calM); dd <= len; dd++) {
+        const d = Jal.toDate(calY, calM, dd);
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.className = 'cal-day num' + (sameDay(d, today) ? ' is-today' : '') + (d.getDay() === 5 ? ' fri' : '');
+        el.textContent = fa(dd);
+        el.setAttribute('aria-label', longDate(d));
+        el.disabled = d > today || d < EPOCH;
+        el.addEventListener('click', () => {
+          if (!pStart || pEnd) { pStart = d; pEnd = null; }
+          else if (d < pStart) { pEnd = pStart; pStart = d; }
+          else pEnd = d;
+          hover = null; paint();
+        });
+        el.addEventListener('pointerenter', () => { if (pStart && !pEnd) { hover = d; paint(); } });
+        grid.appendChild(el);
+        cells.push({ el, d });
+      }
+      paint();
+    }
+    function open() {
+      pickers.forEach(p => p !== api && p.close());
+      const { start, end } = get();
+      pStart = start; pEnd = end; hover = null;
+      const j = Jal.fromDate(end); calY = j.jy; calM = j.jm;
+      renderPresets(); renderMonth();
+      cal.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+      (presetsEl.querySelector('[aria-pressed="true"]') || presetsEl.firstElementChild)?.focus();
+    }
+    function close() { cal.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+    const isOpen = () => cal.classList.contains('open');
+
+    btn.addEventListener('click', () => (isOpen() ? close() : open()));
+    q('.dp-prev').addEventListener('click', () => step(-1));
+    q('.dp-next').addEventListener('click', () => step(1));
+    grid.addEventListener('pointerleave', () => { if (hover) { hover = null; paint(); } });
+    q('.cal-prev').addEventListener('click', () => { if (--calM < 1) { calM = 12; calY--; } renderMonth(); });
+    q('.cal-next').addEventListener('click', () => { if (++calM > 12) { calM = 1; calY++; } renderMonth(); });
+    q('.cal-apply').addEventListener('click', () => { if (pStart) apply(pStart, pEnd || pStart); close(); btn.focus(); });
+    q('.cal-cancel').addEventListener('click', () => { close(); btn.focus(); });
+    document.addEventListener('pointerdown', e => { if (isOpen() && !host.contains(e.target)) close(); });
+    host.addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen()) { e.preventDefault(); e.stopPropagation(); close(); btn.focus(); } });
+
+    const api = { refresh, close, isOpen, apply };
+    pickers.push(api);
+    return api;
+  }
+  const closeCal = () => pickers.forEach(p => p.close());
+
+  /* ---------- page: members ---------- */
+  const MEMBER_KIND = { pkg: 'پکیج', free: 'ورودی آزاد', student: 'شاگرد آزاد' };
+  const pkgCell = (st, withCoach) => {
+    if (!st.pkg) return DASH;
+    if (!st.sessLeft) return `<span class="tag"><i class="swatch" style="background:var(--c-pkg)"></i>پکیج ${st.pkg.label}</span> <span class="ltag daily">تمام شده</span>`;
+    return `<span class="tag"><i class="swatch" style="background:var(--c-pkg)"></i>پکیج ${st.pkg.label}</span><small class="sub-line">${fa(st.sessLeft)} جلسه باقی‌مانده${withCoach && st.coach ? `، ${st.coach.name}` : ''}</small>`;
+  };
+  const insuranceCell = d => {
+    const left = dayDiff(today, d);
+    const tagHtml = left < 0 ? '<span class="ltag daily">منقضی</span>' : left <= 30 ? `<span class="ltag hourly">${fa(left)} روز مانده</span>` : '';
+    return `<span class="num">${shamsiNum(d)}</span>${tagHtml ? ' ' + tagHtml : ''}`;
+  };
+  const lastCell = st => !st.last ? DASH
+    : `<b class="num">${fullDate(st.last.time)}</b><small class="sub-line num">${!st.last.left && sameDay(startOfDay(st.last.time), today) ? 'الان در سالن' : faTime(st.last.time)}</small>`;
+
+  const MCOLS = [
+    { key: 'code',  label: 'کد',                  cls: 'code num', cell: m => faPlain(m.code),             sort: m => m.code },
+    { key: 'name',  label: 'نام و نام خانوادگی',   cell: m => `<span class="person"><span class="av">${m.name[0]}</span>${m.name}</span>`, sort: m => m.name, text: true },
+    { key: 'phone', label: 'شماره تماس',          cls: 'num', cell: m => `<span dir="ltr">${faDigits(m.phone)}</span>`, sort: m => m.phone, text: true },
+    { key: 'pkg',   label: 'پکیج فعلی',           cell: (m, st) => pkgCell(st, true),        sort: (m, st) => (st.pkg ? (st.sessLeft ? 1000 + st.sessLeft : 1) : 0) },
+    { key: 'dob',   label: 'تاریخ تولد',          cls: 'num', cell: m => shamsiNum(m.dob),  sort: m => m.dob.getTime() },
+    { key: 'nid',   label: 'کد ملی',              cls: 'code num', cell: m => faDigits(m.nid), sort: m => m.nid, text: true },
+    { key: 'ins',   label: 'انقضا بیمه ورزشی',    cell: m => insuranceCell(m.insurance),   sort: m => m.insurance.getTime() },
+    { key: 'last',  label: 'آخرین ورود',          cell: (m, st) => lastCell(st),           sort: (m, st) => (st.last ? st.last.time.getTime() : 0) },
+  ];
+  const MFILTERS = [
+    { id: 'all',      label: 'همه',          test: () => true },
+    { id: 'active',   label: 'پکیج فعال',    test: (m, st) => !!(st.pkg && st.sessLeft) },
+    { id: 'none',     label: 'بدون پکیج',    test: (m, st) => !(st.pkg && st.sessLeft) },
+    { id: 'insured',  label: 'بیمه منقضی',   test: m => m.insurance < today },
+  ];
+  const MPAGE = 50;
+  let mSort = { key: 'last', dir: 'desc' }, mFilter = 'all', mShown = MPAGE;
+
+  function renderMembers() {
+    const q = norm($('#mSearch').value);
+    const rows = world.members.map(m => ({ m, st: memberNow(m) }));
+    $('#mChips').innerHTML = MFILTERS.map(f => `<button class="chip" type="button" data-f="${f.id}" aria-pressed="${f.id === mFilter}">${f.label} <b class="num">${fa(rows.filter(r => f.test(r.m, r.st)).length)}</b></button>`).join('');
+    const filt = MFILTERS.find(f => f.id === mFilter);
+    const list = rows.filter(r => filt.test(r.m, r.st))
+      .filter(({ m }) => !q || norm(m.name).includes(q) || String(m.code).includes(q) || m.phone.includes(q) || m.nid.includes(q));
+    const c = MCOLS.find(x => x.key === mSort.key);
+    list.sort((a, b) => {
+      const x = c.sort(a.m, a.st), y = c.sort(b.m, b.st);
+      const r = c.text ? String(x).localeCompare(String(y), 'fa') : x - y;
+      return mSort.dir === 'asc' ? r : -r;
+    });
+    $('#mHead').innerHTML = MCOLS.map(k => `<th scope="col" aria-sort="${k.key === mSort.key ? (mSort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}"><button class="sort${k.key === mSort.key ? ' on' : ''}" type="button" data-k="${k.key}" data-dir="${k.key === mSort.key ? mSort.dir : 'desc'}">${k.label}<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6l6 -6"/></svg></button></th>`).join('');
+    $('#mRows').innerHTML = list.slice(0, mShown).map(({ m, st }) =>
+      `<tr class="clickable-row" tabindex="0" data-mid="${m.id}" aria-label="پرونده ${m.name}">${MCOLS.map(k => `<td${k.cls ? ` class="${k.cls}"` : ''}>${k.cell(m, st)}</td>`).join('')}</tr>`).join('');
+    $('#mEmpty').hidden = list.length > 0;
+    const rest = list.length - mShown;
+    $('#mMore').hidden = rest <= 0;
+    if (rest > 0) $('#mMore').textContent = `نمایش ${fa(Math.min(MPAGE, rest))} عضو دیگر از ${fa(rest)}`;
+    $('#mCount').textContent = list.length === world.members.length ? `${fa(list.length)} عضو` : `${fa(list.length)} از ${fa(world.members.length)} عضو`;
+  }
+  $('#mSearch').addEventListener('input', () => { mShown = MPAGE; renderMembers(); });
+  $('#mChips').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { mFilter = b.dataset.f; mShown = MPAGE; renderMembers(); } });
+  $('#mHead').addEventListener('click', e => {
+    const b = e.target.closest('[data-k]'); if (!b) return;
+    mSort = { key: b.dataset.k, dir: mSort.key === b.dataset.k && mSort.dir === 'desc' ? 'asc' : 'desc' };
+    renderMembers();
+  });
+  $('#mMore').addEventListener('click', () => { mShown += MPAGE; renderMembers(); });
+  const rowOpen = e => {
+    const tr = e.target.closest('[data-mid]'); if (!tr) return;
+    if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    openMember(world.members[+tr.dataset.mid]);
+  };
+  $('#mRows').addEventListener('click', rowOpen);
+  $('#mRows').addEventListener('keydown', rowOpen);
+  // names inside the other lists open the member file too
+  $('#rows').addEventListener('click', e => { const b = e.target.closest('.name-link[data-mid]'); if (b) openMember(world.members[+b.dataset.mid]); });
+
+  /* ---------- member file (popup) ---------- */
+  const md = $('#memberDialog'), mdPanel = md.querySelector('.sheet-panel');
+  let mdMember = null, mdTab = 'info', mdOpener = null, mdRange = { start: addDays(today, -89), end: today };
+  const MEMBER_PRESETS = [
+    ...PRESETS,
+    { id: 'd90', label: '۹۰ روز اخیر', get: () => [addDays(today, -89), today] },
+    { id: 'all', label: 'از ابتدا', get: () => [EPOCH, today], sub: () => `از ${fullDate(EPOCH)}` },
+  ];
+  const mdPicker = makePicker($('#mdPick'), { get: () => mdRange, set: (s, e) => { mdRange = { start: s, end: e }; renderMemberTab(); }, presets: MEMBER_PRESETS });
+  const inRange = t => t >= mdRange.start && t < addDays(mdRange.end, 1) && isNow(t);
+  const dateTime = t => `<b class="num">${faTime(t)}</b><small class="sub-line">${shortWeekday(t)}</small>`;
+  const payCells = p => [p && p.m ? `<span class="pay pay-${p.m}">${PAY[p.m]}</span>` : DASH, p && p.id ? `<span class="num">${faPlain(p.id)}</span>` : DASH];
+  const durText = min => { const h = Math.floor(min / 60), r = Math.round(min % 60); return h ? (r ? `${fa(h)} ساعت و ${fa(r)} دقیقه` : `${fa(h)} ساعت`) : `${fa(r)} دقیقه`; };
+
+  function openMember(m) {
+    hideTip(); closeCal();
+    mdOpener = document.activeElement;
+    mdMember = m; mdTab = 'info';
+    md.showModal();
+    document.body.style.overflow = 'hidden';
+    renderMemberHead();
+    mdPicker.refresh();
+    renderMemberTab();
+    if (canAnimate) M.animate(mdPanel, { opacity: [0, 1], y: [24, 0], scale: [0.97, 1] }, { type: 'spring', stiffness: 340, damping: 30 });
+  }
+  function renderMemberHead() {
+    const m = mdMember, st = memberNow(m);
+    $('#mdAv').textContent = m.name[0];
+    $('#mdName').textContent = m.name;
+    $('#mdSub').textContent = `کد ${faPlain(m.code)}، ${st.pkg ? `پکیج ${st.pkg.label}${st.sessLeft ? `، ${fa(st.sessLeft)} جلسه باقی‌مانده` : '، تمام شده'}` : MEMBER_KIND[m.kind]}${st.coach ? `، مربی: ${st.coach.name}` : ''}`;
+  }
+  async function closeMember() {
+    if (!md.open) return;
+    if (canAnimate) await M.animate(mdPanel, { opacity: 0, y: 16, scale: 0.98 }, { duration: 0.18, ease: EASE }).finished;
+    md.close();
+  }
+  md.addEventListener('close', () => { mInfo.editing = false; if (!dlg.open) document.body.style.overflow = ''; mdPanel.style.opacity = ''; mdPanel.style.transform = ''; if (mdOpener && mdOpener.focus) mdOpener.focus(); });
+  md.addEventListener('cancel', e => { e.preventDefault(); if (mdPicker.isOpen()) mdPicker.close(); else closeMember(); });
+  md.addEventListener('click', e => { if (e.target === md) closeMember(); });
+  $('#mdClose').addEventListener('click', closeMember);
+  $('#mdTabs').addEventListener('click', e => { const b = e.target.closest('[role="tab"]'); if (b) { mdTab = b.dataset.tab; renderMemberTab(); } });
+  $('#mdTabs').addEventListener('keydown', e => {
+    if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+    const tabs = [...$('#mdTabs').children], i = tabs.findIndex(t => t.dataset.tab === mdTab);
+    const n = (i + (e.key === 'ArrowLeft' ? 1 : -1) + tabs.length) % tabs.length; // RTL: left = next
+    mdTab = tabs[n].dataset.tab; renderMemberTab(); tabs[n].focus();
+  });
+
+  function renderMemberTab() {
+    if (!mdMember) return;
+    [...$('#mdTabs').children].forEach(t => { const on = t.dataset.tab === mdTab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; });
+    ['info', 'pay', 'visits', 'report'].forEach(k => { $('#mp-' + k).hidden = k !== mdTab; });
+    $('#mdPick').style.visibility = mdTab === 'info' ? 'hidden' : '';
+    ({ info: renderInfo, pay: renderPayTab, visits: renderVisitsTab, report: renderReport })[mdTab]();
+  }
+
+  // ---- اطلاعات فردی ----
+  const FIELDS = [
+    { k: 'code',      label: 'کد',                  get: m => faPlain(m.code), readonly: true },
+    { k: 'name',      label: 'نام و نام خانوادگی',   get: m => m.name },
+    { k: 'phone',     label: 'شماره تماس',          get: m => faDigits(m.phone), ltr: true, hint: 'مثلاً ۰۹۱۲۱۲۳۴۵۶۷' },
+    { k: 'dob',       label: 'تاریخ تولد',          get: m => shamsiNum(m.dob), ltr: true, hint: 'سال/ماه/روز، مثلاً ۱۳۸۲/۰۵/۱۴' },
+    { k: 'nid',       label: 'کد ملی',              get: m => faDigits(m.nid), ltr: true, hint: '۱۰ رقم' },
+    { k: 'insurance', label: 'انقضا بیمه ورزشی',    get: m => shamsiNum(m.insurance), ltr: true, hint: 'سال/ماه/روز' },
+  ];
+  const toLatin = s => String(s).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).trim();
+  const parseShamsi = s => {
+    const mt = toLatin(s).match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/); if (!mt) return null;
+    const [jy, jm, jd] = [+mt[1], +mt[2], +mt[3]];
+    if (jm < 1 || jm > 12 || jd < 1 || jd > Jal.monthLength(jy, jm)) return null;
+    return Jal.toDate(jy, jm, jd);
+  };
+  const validNid = s => { if (!/^\d{10}$/.test(s) || /^(\d)\1{9}$/.test(s)) return false; const d = [...s].map(Number), r = d.slice(0, 9).reduce((a, x, i) => a + x * (10 - i), 0) % 11; return d[9] === (r < 2 ? r : 11 - r); };
+  // ---- shared personal-info form (members and coaches) ----
+  function infoForm(host, ent, { prefix, state, extra = '', onSaved }) {
+    const id = k => `${prefix}-${k}`;
+    host.innerHTML = `
+      <form class="info-form" novalidate>
+        ${FIELDS.map(f => `<div class="field">
+          <label for="${id('f-' + f.k)}">${f.label}</label>
+          <input id="${id('f-' + f.k)}" name="${f.k}" value="${f.get(ent)}" ${f.readonly || !state.editing ? 'readonly' : ''} ${f.ltr ? 'dir="ltr" class="num"' : ''} aria-describedby="${id('e-' + f.k)}" />
+          <small class="hint" id="${id('e-' + f.k)}">${state.editing && f.hint ? f.hint : (f.k === 'insurance' ? insuranceCell(ent.insurance).replace(/<span class="num">[^<]*<\/span>\s?/, '') : '')}</small>
+        </div>`).join('')}
+        ${extra}
+        <div class="form-actions">
+          ${state.editing
+            ? '<button class="btn primary" type="submit">ذخیره</button><button class="btn" type="button" data-act="cancel">انصراف</button>'
+            : '<button class="btn" type="button" data-act="edit">ویرایش اطلاعات</button>'}
+          <span class="form-msg" role="status"></span>
+        </div>
+      </form>`;
+    const form = host.querySelector('form');
+    const rerender = () => infoForm(host, ent, { prefix, state, extra, onSaved });
+    if (!state.editing) { host.querySelector('[data-act="edit"]').addEventListener('click', () => { state.editing = true; rerender(); form.ownerDocument.getElementById(id('f-name')).focus(); }); return; }
+    host.querySelector('[data-act="cancel"]').addEventListener('click', () => { state.editing = false; rerender(); });
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const v = k => form.elements[k].value.trim();
+      const errs = {};
+      if (v('name').length < 3) errs.name = 'نام و نام خانوادگی را کامل وارد کنید';
+      const phoneV = toLatin(v('phone')).replace(/[\s-]/g, '');
+      if (!/^09\d{9}$/.test(phoneV)) errs.phone = 'شماره باید ۱۱ رقم و با ۰۹ شروع شود';
+      const dob = parseShamsi(v('dob'));
+      if (!dob || dob > today) errs.dob = 'تاریخ را به شکل ۱۳۸۲/۰۵/۱۴ وارد کنید';
+      const nidV = toLatin(v('nid'));
+      if (!validNid(nidV)) errs.nid = 'کد ملی معتبر نیست';
+      const ins = parseShamsi(v('insurance'));
+      if (!ins) errs.insurance = 'تاریخ را به شکل ۱۴۰۵/۰۷/۲۰ وارد کنید';
+      FIELDS.forEach(f => {
+        if (f.readonly) return;
+        const el = document.getElementById(id('e-' + f.k));
+        el.textContent = errs[f.k] || f.hint || ''; el.classList.toggle('err', !!errs[f.k]);
+        form.elements[f.k].setAttribute('aria-invalid', String(!!errs[f.k]));
+      });
+      const first = Object.keys(errs)[0];
+      if (first) { form.elements[first].focus(); return; }
+      Object.assign(ent, { name: v('name'), phone: phoneV, dob, nid: nidV, insurance: ins });
+      state.editing = false;
+      onSaved();
+      rerender();
+      host.querySelector('.form-msg').textContent = 'تغییرات ذخیره شد';
+    });
+  }
+  const mInfo = { editing: false };
+  function renderInfo() {
+    infoForm($('#mp-info'), mdMember, { prefix: 'm', state: mInfo, onSaved: () => {
+      mdMember.visits.forEach(x => { x.name = mdMember.name; });
+      renderMemberHead();
+      if (route === 'members') renderMembers();
+    } });
+  }
+
+  /* ---------- coach timesheet & money ---------- */
+  const PENALTY_PER_MIN = 50000; // late arrival penalty, تومان per minute
+  const WEEKLY_HOURS = 21;
+  const schedText = c => c.schedule.map(s => `${WEEKDAYS[s.day]} ${faHour(s.from)} تا ${faHour(s.to)}`);
+  const schedDays = c => c.schedule.map(s => WEEKDAYS[s.day]).join('، ');
+  const hrs = min => faDec(min / 60);
+  function coachSheet(idx, start, end) {
+    const now = new Date(), rows = [], sessions = [];
+    let target = 0, worked = 0, late = 0, lateDays = 0;
+    for (let d = start; d <= end; d = addDays(d, 1)) {
+      const day = world.days.get(d.getTime()); if (!day) continue;
+      const c = day.coaches[idx]; if (!c.sched) continue;
+      const at = h => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, Math.round(h * 60));
+      const sStart = at(c.sched.from), sEnd = at(c.sched.to);
+      if (sStart > now) continue;
+      let plan = Math.max(0, (minD(sEnd, now) - sStart) / 60000);
+      if (c.leave) plan = c.leave.type === 'daily' ? 0 : Math.max(0, plan - Math.max(0, (minD(sEnd, now) - at(c.leave.from)) / 60000));
+      target += plan;
+      const row = { date: d, c, sStart, sEnd, plan, leave: c.leave };
+      if (c.arrived && c.person.time <= now) {
+        row.in = c.person.time; row.out = c.person.out <= now ? c.person.out : null;
+        row.worked = ((row.out || now) - row.in) / 60000; worked += row.worked;
+        row.late = c.lateMin; if (row.late) { late += row.late; lateDays++; }
+        const st = c.students.filter(s => s.time <= now);
+        row.students = st.length; sessions.push(...st);
+      }
+      rows.push(row);
+    }
+    return { rows, target, worked, late, lateDays, sessions };
+  }
+  function gaugeHtml(worked, target) {
+    const h = worked / 60, t = target / 60, r = t ? Math.min(1, h / t) : (h ? 1 : 0);
+    const diff = h - t;
+    const diffText = Math.abs(diff) < 0.05 ? '<p class="g-diff pos">دقیقاً طبق برنامه</p>'
+      : diff < 0 ? `<p class="g-diff neg">${faDec(-diff)} ساعت کمتر از برنامه</p>` : `<p class="g-diff pos">${faDec(diff)} ساعت بیشتر از برنامه</p>`;
+    return `<div class="gauge">
+      <div class="g-svg">
+        <svg viewBox="0 0 200 112" role="img" aria-label="حضور ${faDec(h)} ساعت از ${faDec(t)} ساعت برنامه">
+          <path class="g-track" d="M180 100 A80 80 0 0 0 20 100" pathLength="100"/>
+          <path class="g-fill" d="M180 100 A80 80 0 0 0 20 100" pathLength="100" data-r="${r}" style="stroke:hsl(${Math.round(r * 125)} 62% 46%);stroke-dasharray:${canAnimate ? 0 : r * 100} 100"/>
+        </svg>
+        <div class="g-center"><b class="num">${faDec(h)}</b><span>ساعت حضور</span></div>
+      </div>
+      <div class="g-scale num"><span>۰</span><span>${faDec(t)} ساعت برنامه</span></div>
+      ${diffText}
+    </div>`;
+  }
+  const playGauge = host => {
+    const p = host.querySelector('.g-fill'); if (!p || !canAnimate) return;
+    const r = +p.dataset.r;
+    M.animate(0, r, { duration: 1, ease: EASE, onUpdate: v => { p.style.strokeDasharray = `${v * 100} 100`; p.style.stroke = `hsl(${Math.round(v * 125)} 62% 46%)`; } });
+  };
+
+  /* ---------- coach roster (مربی ها page) ---------- */
+  const weekStart = () => addDays(today, -((today.getDay() + 1) % 7));
+  function coachTodayTag(c) {
+    const d = world.days.get(today.getTime()).coaches[c.idx], now = new Date();
+    if (!d.sched) return '<span class="tag">برنامه ندارد</span>';
+    if (d.leave && d.leave.type === 'daily') return '<span class="ltag daily">مرخصی</span>';
+    if (!d.arrived || d.person.time > now) return '<span class="tag">هنوز نیامده</span>';
+    if (d.person.out <= now) return `<span class="tag">خارج شده ${faTime(d.person.out)}</span>`;
+    return `<span class="ltag hourly">حاضر</span>${d.lateMin ? ` <span class="ltag late">${fa(d.lateMin)} دقیقه تاخیر</span>` : ''}`;
+  }
+  function renderRoster() {
+    const ws = weekStart();
+    $('#cHead').innerHTML = ['کد', 'نام و نام خانوادگی', 'شماره تماس', 'روزها و ساعات حضور', 'شاگرد با پکیج فعال', 'حضور این هفته', 'تاخیر این هفته', 'وضعیت امروز'].map(h => `<th scope="col">${h}</th>`).join('');
+    $('#cRows').innerHTML = ROSTER.map(c => {
+      const sh = coachSheet(c.idx, ws, today);
+      const active = world.members.filter(m => m.kind === 'pkg' && m.coachIdx === c.idx && memberNow(m).sessLeft).length;
+      return `<tr class="clickable-row" tabindex="0" data-cid="${c.idx}" aria-label="پرونده ${c.name}">
+        <td class="code num">${faPlain(c.code)}</td>
+        <td><span class="person"><span class="av">${c.name[0]}</span>${c.name}</span></td>
+        <td class="num"><span dir="ltr">${faDigits(c.phone)}</span></td>
+        <td>${schedDays(c)}<small class="sub-line num">${faHour(c.schedule[0].from)} تا ${faHour(c.schedule[0].to)}، ${fa(WEEKLY_HOURS)} ساعت در هفته</small></td>
+        <td class="num"><b>${fa(active)}</b></td>
+        <td class="num"><b>${hrs(sh.worked)}</b><span class="unit">از ${fa(WEEKLY_HOURS)} ساعت</span></td>
+        <td class="num">${sh.late ? `<span class="ltag late">${fa(sh.late)} دقیقه</span>` : DASH}</td>
+        <td>${coachTodayTag(c)}</td>
+      </tr>`;
+    }).join('');
+  }
+  const coachRowOpen = e => {
+    const tr = e.target.closest('[data-cid]'); if (!tr) return;
+    if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    openCoach(ROSTER[+tr.dataset.cid]);
+  };
+  $('#cRows').addEventListener('click', coachRowOpen);
+  $('#cRows').addEventListener('keydown', coachRowOpen);
+  $('#rows').addEventListener('click', e => { const b = e.target.closest('.name-link[data-cid]'); if (b) openCoach(ROSTER[+b.dataset.cid]); });
+
+  /* ---------- coach file (popup) ---------- */
+  const cd = $('#coachDialog'), cdPanel = cd.querySelector('.sheet-panel');
+  let cdCoach = null, cdTab = 'info', cdOpener = null, cdRange = { start: weekStart(), end: today }, cdStudentFilter = 'active';
+  const cInfo = { editing: false };
+  const COACH_PRESETS = [
+    ...PRESETS.slice(0, 3),
+    { id: 'lastWeek', label: 'هفته گذشته', get: () => [addDays(weekStart(), -7), addDays(weekStart(), -1)], sub: () => `${fa(WEEKLY_HOURS)} ساعت برنامه` },
+    ...PRESETS.slice(3),
+  ];
+  const cdPicker = makePicker($('#cdPick'), { get: () => cdRange, set: (s, e) => { cdRange = { start: s, end: e }; renderCoachTab(); }, presets: COACH_PRESETS });
+
+  function openCoach(c) {
+    hideTip(); closeCal();
+    cdOpener = document.activeElement;
+    cdCoach = c; cdTab = 'info'; cInfo.editing = false;
+    cd.showModal();
+    document.body.style.overflow = 'hidden';
+    renderCoachHead();
+    cdPicker.refresh();
+    renderCoachTab();
+    if (canAnimate) M.animate(cdPanel, { opacity: [0, 1], y: [24, 0], scale: [0.97, 1] }, { type: 'spring', stiffness: 340, damping: 30 });
+  }
+  function renderCoachHead() {
+    const c = cdCoach;
+    $('#cdAv').textContent = c.name[0];
+    $('#cdName').textContent = c.name;
+    $('#cdSub').textContent = `کد ${faPlain(c.code)}، مربی، ${schedDays(c)}`;
+  }
+  async function closeCoach() {
+    if (!cd.open) return;
+    if (canAnimate) await M.animate(cdPanel, { opacity: 0, y: 16, scale: 0.98 }, { duration: 0.18, ease: EASE }).finished;
+    cd.close();
+  }
+  cd.addEventListener('close', () => { cInfo.editing = false; if (!dlg.open) document.body.style.overflow = ''; cdPanel.style.opacity = ''; cdPanel.style.transform = ''; if (cdOpener && cdOpener.focus) cdOpener.focus(); });
+  cd.addEventListener('cancel', e => { e.preventDefault(); if (cdPicker.isOpen()) cdPicker.close(); else closeCoach(); });
+  cd.addEventListener('click', e => { if (e.target === cd) closeCoach(); });
+  $('#cdClose').addEventListener('click', closeCoach);
+  $('#cdTabs').addEventListener('click', e => { const b = e.target.closest('[role="tab"]'); if (b) { cdTab = b.dataset.tab; renderCoachTab(); } });
+  $('#cdTabs').addEventListener('keydown', e => {
+    if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+    const tabs = [...$('#cdTabs').children], i = tabs.findIndex(t => t.dataset.tab === cdTab);
+    const n = (i + (e.key === 'ArrowLeft' ? 1 : -1) + tabs.length) % tabs.length;
+    cdTab = tabs[n].dataset.tab; renderCoachTab(); tabs[n].focus();
+  });
+
+  function renderCoachTab() {
+    if (!cdCoach) return;
+    [...$('#cdTabs').children].forEach(t => { const on = t.dataset.tab === cdTab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; });
+    ['info', 'students', 'visits', 'report'].forEach(k => { $('#cp-' + k).hidden = k !== cdTab; });
+    $('#cdPick').style.visibility = cdTab === 'info' || cdTab === 'students' ? 'hidden' : '';
+    ({ info: renderCoachInfo, students: renderCoachStudents, visits: renderCoachVisits, report: renderCoachReport })[cdTab]();
+  }
+
+  // ---- اطلاعات فردی ----
+  function renderCoachInfo() {
+    const c = cdCoach;
+    const extra = `<div class="field wide">
+        <span class="field-label">روزها و ساعات حضور</span>
+        <div class="sched">${schedText(c).map(t => `<span class="num">${t}</span>`).join('')}</div>
+        <small class="hint num">${fa(WEEKLY_HOURS)} ساعت در هفته</small>
+      </div>`;
+    infoForm($('#cp-info'), c, { prefix: 'c', state: cInfo, extra, onSaved: () => {
+      world.days.forEach(day => { const r = day.coaches[c.idx]; r.name = c.name; if (r.person) r.person.name = c.name; });
+      renderCoachHead();
+      if (route === 'coaches') renderCoaches();
+    } });
+  }
+
+  // ---- اطلاعات شاگرد ها ----
+  const STUDENT_FILTERS = [
+    { id: 'active',  label: 'پکیج دارد',  test: st => !!st.sessLeft },
+    { id: 'expired', label: 'پکیج ندارد', test: st => !st.sessLeft },
+    { id: 'all',     label: 'همه',        test: () => true },
+  ];
+  function renderCoachStudents() {
+    const c = cdCoach;
+    const all = world.members.filter(m => m.kind === 'pkg' && m.coachIdx === c.idx).map(m => ({ m, st: memberNow(m) }));
+    const f = STUDENT_FILTERS.find(x => x.id === cdStudentFilter);
+    const list = all.filter(r => f.test(r.st)).sort((a, b) => (b.st.last ? b.st.last.time : 0) - (a.st.last ? a.st.last.time : 0));
+    $('#cp-students').innerHTML = `
+      <div class="seg-filter" role="radiogroup" aria-label="وضعیت پکیج شاگرد">
+        ${STUDENT_FILTERS.map(x => `<label class="chip"><input type="radio" name="stf" value="${x.id}" ${x.id === cdStudentFilter ? 'checked' : ''} /><span>${x.label}</span> <b class="num">${fa(all.filter(r => x.test(r.st)).length)}</b></label>`).join('')}
+      </div>
+      ${!list.length ? `<div class="empty-state"><b>شاگردی با این وضعیت نیست</b></div>` : `
+      <div class="table-wrap flat"><table class="tbl">
+        <thead><tr><th scope="col">کد</th><th scope="col">نام و نام خانوادگی</th><th scope="col">شماره تماس</th><th scope="col">پکیج</th><th scope="col">جلسات باقی‌مانده</th><th scope="col">آخرین ورود</th></tr></thead>
+        <tbody>${list.map(({ m, st }) => `<tr class="clickable-row" tabindex="0" data-mid="${m.id}" aria-label="پرونده ${m.name}">
+          <td class="code num">${faPlain(m.code)}</td>
+          <td><span class="person"><span class="av">${m.name[0]}</span>${m.name}</span></td>
+          <td class="num"><span dir="ltr">${faDigits(m.phone)}</span></td>
+          <td><span class="tag"><i class="swatch" style="background:var(--c-pkg)"></i>پکیج ${st.pkg.label}</span></td>
+          <td class="num">${st.sessLeft ? `<b>${fa(st.sessLeft)}</b><span class="unit">از ${fa(st.pkg.n)}</span>` : '<span class="ltag daily">تمام شده</span>'}</td>
+          <td>${lastCell(st)}</td></tr>`).join('')}</tbody>
+      </table></div>`}`;
+  }
+  $('#cp-students').addEventListener('change', e => { if (e.target.name === 'stf') { cdStudentFilter = e.target.value; renderCoachStudents(); } });
+  $('#cp-students').addEventListener('click', rowOpen);
+  $('#cp-students').addEventListener('keydown', rowOpen);
+
+  // ---- اطلاعات تردد ----
+  function renderCoachVisits() {
+    const sh = coachSheet(cdCoach.idx, cdRange.start, cdRange.end);
+    const over = Math.max(0, sh.worked - sh.target), short = Math.max(0, sh.target - sh.worked);
+    const rows = [...sh.rows].sort((a, b) => b.date - a.date);
+    $('#cp-visits').innerHTML = `
+      <p class="md-summary num">${rangeText(cdRange.start, cdRange.end)}، هر هفته کامل ${fa(WEEKLY_HOURS)} ساعت برنامه</p>
+      <div class="gauge-wrap">
+        ${gaugeHtml(sh.worked, sh.target)}
+        <div class="pen">
+          <h3>جریمه و اضافه‌کار</h3>
+          <div class="md-stats two">
+            <div class="md-stat"><small>تاخیر</small><b class="num md-small">${fa(Math.round(sh.late))} دقیقه</b><span class="num">در ${fa(sh.lateDays)} روز</span></div>
+            <div class="md-stat bad"><small>جریمه تاخیر</small><b class="num md-small">${fa(Math.round(sh.late) * PENALTY_PER_MIN)} تومان</b><span class="num">${fa(PENALTY_PER_MIN)} تومان برای هر دقیقه</span></div>
+            <div class="md-stat good"><small>اضافه‌کار</small><b class="num md-small">${hrs(over)} ساعت</b><span>نرخ اضافه‌کار هنوز تعیین نشده</span></div>
+            <div class="md-stat"><small>کسری ساعت</small><b class="num md-small">${hrs(short)} ساعت</b></div>
+          </div>
+        </div>
+      </div>
+      ${!rows.length ? emptyMsg('در این بازه روز کاری ثبت نشده') : `
+      <div class="table-wrap flat"><table class="tbl">
+        <thead><tr><th scope="col">تاریخ</th><th scope="col">برنامه</th><th scope="col">ساعت ورود</th><th scope="col">ساعت خروج</th><th scope="col">مدت حضور</th><th scope="col">تاخیر</th><th scope="col">شاگرد</th></tr></thead>
+        <tbody>${rows.map(r => {
+          const daily = r.leave && r.leave.type === 'daily';
+          return `<tr class="${r.late ? 'late' : ''}">
+            <td><b>${shortWeekday(r.date)}</b></td>
+            <td class="num">${faTime(r.sStart)} تا ${faTime(r.sEnd)}${r.leave && !daily ? `<small class="sub-line">مرخصی ساعتی از ${faHour(r.leave.from)}</small>` : ''}</td>
+            <td class="num">${daily ? `<span class="ltag daily">مرخصی روزانه</span>` : r.in ? `<b>${faTime(r.in)}</b>` : DASH}</td>
+            <td class="num">${daily ? DASH : r.in ? (r.out ? `<b>${faTime(r.out)}</b>` : '<span class="ltag hourly">حاضر</span>') : DASH}</td>
+            <td class="num">${r.in ? `${hrs(r.worked)} ساعت` : DASH}</td>
+            <td class="num">${r.late ? `<span class="ltag late">${fa(r.late)} دقیقه</span>` : (r.in ? '<span class="dash">به‌موقع</span>' : DASH)}</td>
+            <td class="num">${r.in ? fa(r.students) : DASH}</td>
+          </tr>`; }).join('')}</tbody>
+      </table></div>`}`;
+    playGauge($('#cp-visits'));
+  }
+
+  // ---- گزارش کلی ----
+  function renderCoachReport() {
+    const c = cdCoach, sh = coachSheet(c.idx, cdRange.start, cdRange.end);
+    const income = sh.sessions.length * c.rate, penalty = Math.round(sh.late) * PENALTY_PER_MIN;
+    const byPkg = PACKAGES.map(p => ({ name: `پکیج ${p.label}`, value: sh.sessions.filter(s => s.pkg === p).length * c.rate, n: sh.sessions.filter(s => s.pkg === p).length }));
+    const wd = [6, 0, 1, 2, 3, 4, 5].map(g => ({ name: WEEKDAYS[g], value: sh.sessions.filter(s => s.time.getDay() === g).length }));
+    $('#cp-report').innerHTML = `
+      <p class="md-summary num">${rangeText(cdRange.start, cdRange.end)}، هر جلسه ${fa(c.rate)} تومان</p>
+      <div class="md-stats">
+        <div class="md-stat"><small>درآمد کل</small><b class="num">${money(income)}</b><span>تومان</span></div>
+        <div class="md-stat"><small>تعداد جلسات</small><b class="num">${fa(sh.sessions.length)}</b></div>
+        <div class="md-stat bad"><small>جریمه تاخیر</small><b class="num">${money(penalty)}</b><span>تومان</span></div>
+        <div class="md-stat"><small>خالص پس از جریمه</small><b class="num">${money(Math.max(0, income - penalty))}</b><span>تومان</span></div>
+      </div>
+      <div class="md-pkg">
+        <div><small>ساعت حضور</small><b class="num">${hrs(sh.worked)} از ${hrs(sh.target)} ساعت</b></div>
+        <div><small>تاخیر</small><b class="num">${fa(Math.round(sh.late))} دقیقه</b></div>
+        <div><small>اضافه‌کار</small><b class="num">${hrs(Math.max(0, sh.worked - sh.target))} ساعت</b></div>
+        <div><small>شاگرد با پکیج فعال</small><b class="num">${fa(world.members.filter(m => m.kind === 'pkg' && m.coachIdx === c.idx && memberNow(m).sessLeft).length)}</b></div>
+      </div>
+      <div class="md-grid">
+        <div class="md-box"><h3>درآمد به تفکیک پکیج</h3><ul class="bars money" id="cdPkgBars"></ul></div>
+        <div class="md-box"><h3>جلسات بر اساس روز هفته</h3><ul class="bars" id="cdWeekBars"></ul></div>
+      </div>`;
+    bars($('#cdPkgBars'), byPkg.map(p => ({ name: p.name, sub: `${fa(p.n)} جلسه`, value: p.value, display: compact(p.value), faded: !p.n })));
+    bars($('#cdWeekBars'), wd.map(d => ({ name: d.name, sub: '', value: d.value, display: fa(d.value), faded: !d.value })));
+  }
+
+  // ---- اطلاعات پرداخت ----
+  function renderPayTab() {
+    const list = mdMember.payments.filter(p => inRange(p.time)).sort((a, b) => b.time - a.time);
+    const sum = list.reduce((s, p) => s + p.price, 0);
+    $('#mp-pay').innerHTML = !list.length ? emptyMsg('در این بازه پرداختی ثبت نشده') : `
+      <p class="md-summary num">${fa(list.length)} پرداخت، ${fa(sum)} تومان، ${rangeText(mdRange.start, mdRange.end)}</p>
+      <div class="table-wrap flat"><table class="tbl">
+        <thead><tr><th scope="col">خدمت</th><th scope="col" class="money">مبلغ پرداختی</th><th scope="col">روش پرداخت</th><th scope="col">شناسه پرداخت</th><th scope="col">تاریخ</th></tr></thead>
+        <tbody>${list.map(p => `<tr><td class="item">${p.service}</td><td class="money num">${fa(p.price)}<span class="unit">تومان</span></td><td>${payCells(p.pay)[0]}</td><td>${payCells(p.pay)[1]}</td><td class="time num">${dateTime(p.time)}</td></tr>`).join('')}</tbody>
+        <tfoot><tr><td>جمع کل</td><td class="money num">${fa(sum)}<span class="unit">تومان</span></td><td></td><td></td><td></td></tr></tfoot>
+      </table></div>`;
+  }
+
+  // ---- اطلاعات تردد ----
+  const entryType = v => v.cat === 'pkg'
+    ? `<span class="tag"><i class="swatch" style="background:var(--c-pkg)"></i>پکیج ${v.pkg.label}</span><small class="sub-line num">جلسه ${fa(v.pkg.n - v.sessLeft)} از ${fa(v.pkg.n)}</small>`
+    : `<span class="tag"><i class="swatch" style="background:${CAT[v.cat].color}"></i>${CAT[v.cat].label}</span>`;
+  function renderVisitsTab() {
+    const list = mdMember.visits.filter(v => inRange(v.time)).sort((a, b) => b.time - a.time);
+    $('#mp-visits').innerHTML = !list.length ? emptyMsg('در این بازه ورودی ثبت نشده') : `
+      <p class="md-summary num">${fa(list.length)} ورود، ${rangeText(mdRange.start, mdRange.end)}</p>
+      <div class="table-wrap flat"><table class="tbl">
+        <thead><tr><th scope="col">نوع ورود</th><th scope="col">مربی</th><th scope="col">تاریخ و ساعت ورود</th><th scope="col">تاریخ و ساعت خروج</th><th scope="col" class="money">مبلغ پرداختی</th><th scope="col">روش پرداخت</th><th scope="col">شناسه پرداخت</th></tr></thead>
+        <tbody>${list.map(v => { const [pm, pid] = payCells(v.pay); return `<tr>
+          <td>${entryType(v)}</td>
+          <td>${v.coachOf ? `<span class="coach-name">${v.coachOf.name}</span>` : DASH}</td>
+          <td class="time num">${dateTime(v.time)}</td>
+          <td class="time num">${v.left ? dateTime(v.out) : '<span class="ltag hourly">حاضر</span>'}</td>
+          <td class="money num">${v.cat === 'pkg' ? '<span class="dash">کسر از پکیج</span>' : `${fa(v.price)}<span class="unit">تومان</span>`}</td>
+          <td>${pm}</td><td>${pid}</td></tr>`; }).join('')}</tbody>
+      </table></div>`;
+  }
+
+  // ---- گزارش کلی ----
+  function renderReport() {
+    const m = mdMember, st = memberNow(m);
+    const visits = m.visits.filter(v => inRange(v.time)), pays = m.payments.filter(p => inRange(p.time));
+    const done = visits.filter(v => v.left);
+    const avg = done.length ? done.reduce((s, v) => s + (v.out - v.time) / 60000, 0) / done.length : 0;
+    const paid = pays.reduce((s, p) => s + p.price, 0);
+    const services = {};
+    pays.forEach(p => { const k = p.service.startsWith('ابزار') ? 'ابزار' : p.service; services[k] = (services[k] || 0) + p.price; });
+    const wd = [6, 0, 1, 2, 3, 4, 5].map(g => ({ name: WEEKDAYS[g], value: visits.filter(v => v.time.getDay() === g).length }));
+    const pkgBox = st.pkg ? `
+      <div class="md-pkg">
+        <div><small>پکیج فعلی</small><b>پکیج ${st.pkg.label}</b></div>
+        <div><small>جلسات باقی‌مانده</small><b class="num">${fa(st.sessLeft)} از ${fa(st.pkg.n)}</b></div>
+        <div><small>مربی</small><b>${st.coach.name}</b></div>
+        <div class="meter" aria-hidden="true"><i style="width:${(st.sessLeft / st.pkg.n) * 100}%"></i></div>
+      </div>` : `<div class="md-pkg"><div><small>نوع عضویت</small><b>${MEMBER_KIND[m.kind]}</b></div><div><small>پکیج فعلی</small><b>ندارد</b></div></div>`;
+    $('#mp-report').innerHTML = `
+      <p class="md-summary num">${rangeText(mdRange.start, mdRange.end)}</p>
+      <div class="md-stats">
+        <div class="md-stat"><small>تعداد ورود</small><b class="num">${fa(visits.length)}</b></div>
+        <div class="md-stat"><small>مجموع پرداخت</small><b class="num">${money(paid)}</b><span>تومان</span></div>
+        <div class="md-stat"><small>میانگین مدت حضور</small><b class="num md-small">${done.length ? durText(avg) : '-'}</b></div>
+        <div class="md-stat"><small>آخرین ورود</small><b class="num md-small">${st.last ? fullDate(st.last.time) : '-'}</b></div>
+      </div>
+      ${pkgBox}
+      <div class="md-grid">
+        <div class="md-box"><h3>ورود بر اساس روز هفته</h3><ul class="bars" id="mdWeek"></ul></div>
+        <div class="md-box"><h3>پرداخت به تفکیک خدمت</h3>${Object.keys(services).length ? '<ul class="bars money" id="mdServ"></ul>' : emptyMsg('پرداختی ثبت نشده')}</div>
+      </div>`;
+    bars($('#mdWeek'), wd.map(d => ({ name: d.name, sub: '', value: d.value, display: fa(d.value), faded: !d.value })));
+    if ($('#mdServ')) bars($('#mdServ'), Object.entries(services).sort((a, b) => b[1] - a[1]).map(([k, v]) => ({ name: k, sub: '', value: v, display: compact(v) })));
+  }
+  const emptyMsg = t => `<div class="empty-state"><span class="tile warm" aria-hidden="true">${IC.cal}</span><b>${t}</b>بازه تاریخ را از بالای پنجره تغییر دهید.</div>`;
+
+  /* ---------- routing ---------- */
+  const ROUTES = {
+    overview: { title: 'گزارش کلی در یک نگاه', greet: () => data.live ? 'وضعیت لحظه‌ای سالن، مربیان و دخل امروز' : 'وضعیت سالن، مربیان و دخل در بازه انتخاب‌شده', render: renderOverview },
+    coaches:  { title: 'مربی ها', greet: () => 'شاگردها، درآمد و مرخصی مربی‌ها در بازه انتخاب‌شده', render: renderCoaches },
+    members:  { title: 'اعضا', greet: () => 'فهرست اعضای باشگاه؛ برای دیدن پرونده هر عضو روی ردیف او بزنید', render: renderMembers, noDate: true },
+  };
+  let route = 'overview';
+  function renderPage(animateCards) {
+    const r = ROUTES[route];
+    $('#pageTitle').textContent = r.title;
+    $('#pageGreet').textContent = r.greet();
+    document.title = `${r.title} | بلدرلند`;
+    $('#datepick').hidden = !!r.noDate;
+    document.querySelectorAll('[data-route]').forEach(a => {
+      const on = a.dataset.route === route;
+      a.classList.toggle('active', on && a.classList.contains('nav-item'));
+      if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    Object.keys(ROUTES).forEach(k => { $('#page-' + k).hidden = k !== route; });
+    r.render();
+    if (animateCards && canAnimate) M.animate(`#page-${route} > .card`, { opacity: [0, 1], y: [18, 0] }, { duration: 0.5, ease: EASE, delay: M.stagger(0.07) });
+  }
+  const readRoute = () => { const h = location.hash.replace(/^#\/?/, ''); return ROUTES[h] ? h : 'overview'; };
+  addEventListener('hashchange', () => { route = readRoute(); renderPage(true); scrollTo(0, 0); });
+
+  /* ---------- page date range ---------- */
+  function setRange(s, e) {
+    range = { start: s, end: e };
+    data = buildRange(s, e);
+    renderPage(false);
+  }
+  const pagePicker = makePicker($('#datepick'), { get: () => range, set: setRange, presets: PRESETS });
+  $('#goToday').addEventListener('click', () => pagePicker.apply(today, today));
+
+  /* ---------- boot ---------- */
+  route = readRoute();
+  setRange(today, today);
+  pagePicker.refresh();
+  if (canAnimate) M.animate(`#page-${route} > .card`, { opacity: [0, 1], y: [20, 0] }, { duration: 0.6, ease: EASE, delay: M.stagger(0.08) });
+})();
+</script>
+</body>
+</html>
